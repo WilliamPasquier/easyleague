@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { RoutePath } from './shared/models/route-path';
-import { SearchComponent } from './features/search/search.component';
+import { SearchComponent } from './features/search/page/search.component';
 import { UserComponent } from './features/user/user.component';
 import { ReplayComponent } from './features/replay/replay.component';
 

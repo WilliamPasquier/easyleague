@@ -1,0 +1,5 @@
+<div class="search-container">
+  <p>search page</p>
+  <app-search-bar (search)="filterUsers($event)"></app-search-bar>
+  <app-search-user [users]="filteredUsers"></app-search-user>
+</div>

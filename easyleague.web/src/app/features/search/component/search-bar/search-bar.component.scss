@@ -1,0 +1,42 @@
+@import '@angular/material/theming';
+
+@include mat-core();
+
+$search-primary: #004700;
+$search-accent: rgb(0, 52, 40);
+$search-warn: gold;
+
+$search-input-background: #fff;
+$search-input-border: rgba(0, 0, 0, 0.12);
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  background-color: $search-input-background;
+  border: 1px solid $search-input-border;
+  border-radius: 4px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.search-input {
+  flex: 1;
+  padding: 0 8px;
+  border: none;
+  outline: none;
+}
+
+.search-button {
+  background-color: $search-primary;
+  color: #fff;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+
+  &:hover {
+    background-color: darken($search-primary, 10%);
+  }
+}
