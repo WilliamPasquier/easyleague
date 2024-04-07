@@ -37,5 +37,5 @@ After that you can start the application with the command
 python app.py <Riot token>
 ```
 
-You can obtain one from the [Riot Developer Portal] (https://developer.riotgames.com/).
+You can obtain one from the [Riot Developer Portal](https://developer.riotgames.com/).
 Keys are available for 24 hours. Make sure it's a working key.
