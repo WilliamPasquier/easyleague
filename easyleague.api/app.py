@@ -1,5 +1,7 @@
 from datetime import datetime
 from flask import Flask
+import json
+import os
 import requests
 import sys
 
@@ -23,9 +25,22 @@ def create_header():
         'X-Riot-Token': f'{riot_token}'
     }
 
+def save_json(content, username, id, file_type='timeline'):
+    path = os.getcwd() + f'\\json_test\\{file_type}'
+
+    if not os.path.exists(path):
+        os.makedirs(path)
+
+    file_path = path + f'\\{file_type}_{username}_{id}.json'
+
+    with open(file_path, 'w') as file:
+        json.dump(content, file, indent=4)
+
 app = Flask(__name__)
 app.debug = True
-
+########################################################
+# Défintion des routes de l'application
+########################################################
 @app.route('/<region>/summoner/<username>', methods=['GET', 'POST'])
 def get_summoner_data(region, username):
     '''Récupère les informations d'un "Summoner" via le pseudo et la région (europe pour l'instant)'''
@@ -64,6 +79,8 @@ def get_match_info(region, username, id):
 
     match_info = requests.get(url, headers=headers).json()
 
+    save_json(match_info, username, id, file_type='match_info')
+
     return match_info
 
 @app.route('/<region>/summoner/<username>/match/<id>/timeline', methods=['GET', 'POST'])
@@ -77,11 +94,13 @@ def get_match_timeline(region, username, id):
 
     timeline = requests.get(url, headers=headers).json()
 
-    with open(f'./json_test/timeline_{datetime.now()}.json', 'w') as file:
-        file.write(timeline)
+    save_json(timeline, username, id)
 
     return timeline
 
+############################
+# "Fonction" Principale
+############################
 if __name__ == '__main__':
     if len(sys.argv) != 2:
         print("Erreur: Nombres d'arguments incorrect\nUtilisation: python app.py <token api Riot>")

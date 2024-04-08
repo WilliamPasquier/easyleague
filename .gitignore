@@ -1,6 +1,9 @@
 # Created by https://www.toptal.com/developers/gitignore/api/venv,python,flask,angular,node
 # Edit at https://www.toptal.com/developers/gitignore?templates=venv,python,flask,angular,node
 
+# EasyLeague
+json_test/
+
 ### Angular ###
 ## Angular ##
 # compiled output
