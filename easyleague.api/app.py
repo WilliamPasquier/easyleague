@@ -4,14 +4,17 @@ import requests
 import sys
 
 def get_region_summoner(region):
+    '''Encode la région en fonction du paramètre reçu'''
     if(region == 'euw'):
         return 'euw1'
     
 def get_region_matches(region):
+    '''Encode la région en fonction du paramètre reçu'''
     if(region == 'euw'):
         return 'europe'
 
 def create_header():
+    '''Construit le header de l'app en fournissant le token d'authentification'''
     global riot_token
 
     return {
@@ -52,6 +55,7 @@ def get_matches(region, username):
 
 @app.route('/<region>/summoner/<username>/match/<id>', methods=['GET', 'POST'])
 def get_match_info(region, username, id):
+    '''Récupère les informations d'un match grâce à l'id'''
     region_matches = get_region_matches(region)
 
     headers = create_header()
@@ -64,6 +68,7 @@ def get_match_info(region, username, id):
 
 @app.route('/<region>/summoner/<username>/match/<id>/timeline', methods=['GET', 'POST'])
 def get_match_timeline(region, username, id):
+    '''Récupère les informations dans le temps d'un match grâce à l'id'''
     region_matches = get_region_matches(region)
 
     headers = create_header()
@@ -71,6 +76,9 @@ def get_match_timeline(region, username, id):
     url = f'https://{region_matches}.api.riotgames.com/lol/match/v5/matches/{id}/timeline'
 
     timeline = requests.get(url, headers=headers).json()
+
+    with open(f'./json_test/timeline_{datetime.now()}.json', 'w') as file:
+        file.write(timeline)
 
     return timeline
 
