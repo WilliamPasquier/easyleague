@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { User } from '../../model/user.model';
+import { User } from '../../../../shared/models/user.model';
 
 @Component({
   selector: 'app-search-user',
