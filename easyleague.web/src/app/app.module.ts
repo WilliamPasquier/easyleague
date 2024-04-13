@@ -7,9 +7,10 @@ import { SearchComponent } from './features/search/search.component';
 import { UserComponent } from './features/user/user.component';
 import { ReplayComponent } from './features/replay/replay.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { SearchBarComponent } from './features/search/components/search-bar/search-bar.component';
-import { SearchUserComponent } from './features/search/components/search-user/search-user.component';
 import { SummonerCardComponent } from './shared/components/summoner-card/summoner-card.component';
+import { SearchBarComponent } from './features/search/components/search-bar/search-bar.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -18,14 +19,15 @@ import { SummonerCardComponent } from './shared/components/summoner-card/summone
     SearchComponent,
     UserComponent,
     ReplayComponent,
-    SearchBarComponent,
-    SearchUserComponent,
-    SummonerCardComponent
+    SummonerCardComponent,
+    SearchBarComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    FontAwesomeModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

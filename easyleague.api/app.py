@@ -9,11 +9,27 @@ def get_region_summoner(region):
     '''Encode la région en fonction du paramètre reçu'''
     if(region == 'euw'):
         return 'euw1'
+    if(region == 'eun'):
+        return 'eun1'
+    if(region == 'jp'):
+        return 'jp1'
+    if(region == 'kr'):
+        return 'kr'
+    if(region == 'na'):
+        return 'na1'
     
 def get_region_matches(region):
     '''Encode la région en fonction du paramètre reçu'''
     if(region == 'euw'):
         return 'europe'
+    if(region == 'eun'):
+        return 'europe'
+    if(region == 'jp'):
+        return 'asia'
+    if(region == 'kr'):
+        return 'asia'
+    if(region == 'na'):
+        return 'americas'
 
 def create_header():
     '''Construit le header de l'app en fournissant le token d'authentification'''

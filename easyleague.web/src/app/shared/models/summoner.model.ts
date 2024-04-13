@@ -1,3 +1,6 @@
+/**
+ * Summoner interface.
+ */
 export interface Summoner {
     name: string;
     profileIconId: number;
