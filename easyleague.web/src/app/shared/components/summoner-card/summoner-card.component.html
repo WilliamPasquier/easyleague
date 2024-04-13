@@ -1,1 +1,25 @@
-<p>summoner-card works!</p>
+<div class="summoner--container">
+    <div class="summoner--aside">
+        <img 
+            [attr.src]="'https://raw.communitydragon.org/14.7/game/assets/ux/summonericons/profileicon' + summonerInfo?.profileIconId + '.png'" 
+            alt="Summoner profile icon image" 
+            class="summoner--profile-icon"
+        >
+    </div>
+    <div class="summoner--content">
+        <span class="summoner--name">
+            {{ summonerInfo?.name }}
+            <span class="summoner--level">
+                Level {{ summonerInfo?.summonerLevel }}
+            </span>
+        </span>
+        <span class="summoner--region">
+            <fa-icon [icon]="faEarthEurope"></fa-icon>
+            {{ summonerInfo?.region }}
+        </span>
+        <span class="summoner--lastdate">
+            <fa-icon [icon]="faCalendar"></fa-icon>
+            {{ lastDateConnection }}
+        </span>
+    </div>
+</div>
