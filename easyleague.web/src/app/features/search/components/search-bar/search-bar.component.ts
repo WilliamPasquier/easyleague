@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import {
   faMagnifyingGlass,
@@ -7,13 +7,14 @@ import {
 import { Region } from '@shared/models/region.model';
 import { SearchService } from '../../services/search.service';
 import { Summoner } from '@shared/models/summoner.model';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-search-bar',
   templateUrl: './search-bar.component.html',
   styleUrls: ['./search-bar.component.scss'],
 })
-export class SearchBarComponent implements OnInit {
+export class SearchBarComponent implements OnInit, OnDestroy {
   faMagnifyingGlass = faMagnifyingGlass;
   faCircleExclamation = faCircleExclamation;
 
@@ -52,6 +53,8 @@ export class SearchBarComponent implements OnInit {
     validators: Validators.required,
   });
 
+  private subscription: Subscription = new Subscription();
+
   /**
    * Region selected by the user.
    */
@@ -71,7 +74,7 @@ export class SearchBarComponent implements OnInit {
 
   ngOnInit(): void {
     // Subscribe on field changes
-    this.summonerSearch.valueChanges.subscribe((summoner) => {
+    this.subscription = this.summonerSearch.valueChanges.subscribe((summoner) => {
       console.log(summoner);
     });
   }
@@ -99,5 +102,9 @@ export class SearchBarComponent implements OnInit {
       .catch((error) => {
         console.error(error);
       });
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 }
