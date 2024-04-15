@@ -7,7 +7,7 @@ class Summoner:
             profile_icon_id: int, 
             summoner_level: int, 
             last_date_connection: int,
-            region: str
+            region: date
         ):
         self.name = name
         self.profileIconId = profile_icon_id

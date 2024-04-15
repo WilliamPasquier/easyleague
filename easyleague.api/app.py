@@ -1,7 +1,7 @@
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from flask import Flask
 from flask_cors import CORS
-from easyleaguemodel import Summoner
+from easyleaguemodel import Summoner, DateTimeEncoder
 import json
 import os
 import requests
@@ -77,16 +77,17 @@ def get_summoner_data(region, username):
         return {}
     
     summoner_json = summoner_result.json()
+    revision_date = datetime.fromtimestamp(round(summoner_result['revisionDate'] / 1000))
 
     summoner = Summoner.Summoner(
         username,
         summoner_json['profileIconId'],
         summoner_json['summonerLevel'],
-        summoner_json['revisionDate'],
+        revision_date,
         region.upper()
     )
 
-    return json.dumps(summoner.__dict__)
+    return json.dumps(summoner.__dict__, indent=4, cls=DateTimeEncoder.DateTimeEncoder)
 
 @app.route('/summoner/<username>/all', methods=['GET', 'POST'])
 def get_summoner_data_all_region(username):

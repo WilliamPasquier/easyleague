@@ -5,7 +5,7 @@ import { Summoner } from '@shared/models/summoner.model';
 @Component({
   selector: 'app-summoner-card',
   templateUrl: './summoner-card.component.html',
-  styleUrls: ['./summoner-card.component.scss']
+  styleUrls: ['./summoner-card.component.scss'],
 })
 export class SummonerCardComponent implements OnInit {
   faEarthEurope = faEarthEurope;
@@ -14,26 +14,25 @@ export class SummonerCardComponent implements OnInit {
   /**
    * Summoner info retrieve from
    */
-  @Input() summonerInfo?: Summoner
+  @Input() summonerInfo?: Summoner;
 
   /**
    * Last connection date
    */
-  lastDateConnection?: string; 
+  lastDateConnection?: string;
 
   ngOnInit(): void {
-    this.lastDateConnection = new Date().toDateString();
-    
-  }
-
-  dateToString (date: Date): string {
-    const options = {
+    const options: Intl.DateTimeFormatOptions = {
+      day: 'numeric',
       weekday: 'long',
-      year: 'numeric',
       month: 'long',
-      day: 'numeric'
+      year: 'numeric',
     };
 
-    return date.toLocaleString('fr-FR');
+    if (this.summonerInfo && this.summonerInfo.lastDateConnection) {
+      this.lastDateConnection = new Date(
+        this.summonerInfo.lastDateConnection
+      ).toLocaleString('fr-FR', options);
+    }
   }
 }
