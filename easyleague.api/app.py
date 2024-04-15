@@ -1,4 +1,4 @@
-from datetime import datetime
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from flask import Flask
 from flask_cors import CORS
 from easyleaguemodel import Summoner
@@ -6,6 +6,7 @@ import json
 import os
 import requests
 import sys
+import time
 
 def get_region_summoner(region):
     '''Encode la région en fonction du paramètre reçu'''
@@ -70,17 +71,68 @@ def get_summoner_data(region, username):
 
     headers = create_header()
 
-    summoner_result = requests.get(url, headers=headers).json()
+    summoner_result = requests.get(url, headers=headers)
+
+    if summoner_result.status_code == 404:
+        return {}
+    
+    summoner_json = summoner_result.json()
 
     summoner = Summoner.Summoner(
         username,
-        summoner_result['profileIconId'],
-        summoner_result['summonerLevel'],
-        summoner_result['revisionDate'],
+        summoner_json['profileIconId'],
+        summoner_json['summonerLevel'],
+        summoner_json['revisionDate'],
         region.upper()
     )
 
     return json.dumps(summoner.__dict__)
+
+@app.route('/summoner/<username>/all', methods=['GET', 'POST'])
+def get_summoner_data_all_region(username):
+    ''''''
+    regions = [
+        'euw',
+        'eun',
+        'jp',
+        'kr',
+        'na',
+    ]
+
+    # EXEMPLE FOR DOCUMENTATION ! 
+    result = []
+
+    started = time.perf_counter()
+    for region in regions:
+        summoner_result = get_summoner_data(region, username)
+        result.append(json.loads(summoner_result))
+
+    finished = time.perf_counter()
+    
+    result.append({'duration': round(finished - started, 2)}) 
+
+    # result = {
+    #     'regions': [],
+    #     'durations': 0 
+    # }
+    # started = time.perf_counter()
+
+    # with ThreadPoolExecutor(max_workers=5) as pool:
+    #     api_call = {pool.submit(get_summoner_data, region, username): region for region in regions}
+    #     for call_index, call in enumerate(as_completed(api_call)):
+    #         summoner_result = call.result()
+
+    #         if summoner_result == {}:
+    #             result['regions'].append({regions[call_index]: None})
+    #         else:
+    #             result['regions'].append({regions[call_index]: json.loads(summoner_result)})
+
+    # finished = time.perf_counter()
+
+    # result['durations'] = round(finished - started, 2)
+
+    return json.dumps(result)
+    
 
 @app.route('/<region>/summoner/<username>/matches', methods=['GET', 'POST'])
 def get_matches(region, username):
