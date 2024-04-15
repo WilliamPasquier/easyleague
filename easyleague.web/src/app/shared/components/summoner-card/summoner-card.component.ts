@@ -22,7 +22,7 @@ export class SummonerCardComponent implements OnInit {
   lastDateConnection?: string; 
 
   ngOnInit(): void {
-    this.lastDateConnection = new Date().toDateString();
+    // this.lastDateConnection = new Date(this.summonerInfo?.lastDateConnection).toDateString();
   }
 
   dateToString (date: Date): string {

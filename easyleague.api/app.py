@@ -1,7 +1,7 @@
 from datetime import datetime
 from flask import Flask
 from flask_cors import CORS
-from easyleaguemodel import Summoner
+from easyleaguemodel import Summoner, DateTimeEncoder
 import json
 import os
 import requests
@@ -71,16 +71,17 @@ def get_summoner_data(region, username):
     headers = create_header()
 
     summoner_result = requests.get(url, headers=headers).json()
+    revision_date = datetime.fromtimestamp(round(summoner_result['revisionDate'] / 1000))
 
     summoner = Summoner.Summoner(
         username,
         summoner_result['profileIconId'],
         summoner_result['summonerLevel'],
-        summoner_result['revisionDate'],
+        revision_date,
         region.upper()
     )
 
-    return json.dumps(summoner.__dict__)
+    return json.dumps(summoner.__dict__, indent=4, cls=DateTimeEncoder.DateTimeEncoder)
 
 @app.route('/<region>/summoner/<username>/matches', methods=['GET', 'POST'])
 def get_matches(region, username):
