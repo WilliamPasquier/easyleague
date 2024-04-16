@@ -1,9 +1,125 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output, inject } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
+import { Region } from '@shared/models/region.model';
 import { Summoner } from '@shared/models/summoner.model';
+import { Subscription } from 'rxjs';
+import { SearchService } from './services/search.service';
+import { faCircleExclamation, faMagnifyingGlass, faStopwatch } from '@fortawesome/free-solid-svg-icons';
+import { Suggestion } from './models/suggestion.model';
 
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss']
 })
-export class SearchComponent { }
+export class SearchComponent implements OnInit, OnDestroy {
+  faMagnifyingGlass = faMagnifyingGlass;
+  faCircleExclamation = faCircleExclamation;
+  faStopwatch = faStopwatch;
+
+  searchService = inject(SearchService);
+
+  /**
+   * List of region.
+   */
+  regionOptions: Array<Region> = [
+    {
+      name: 'Europe West',
+      code: 'euw',
+    },
+    {
+      name: 'Europe Nordic & East',
+      code: 'eun',
+    },
+    {
+      name: 'Japan',
+      code: 'jp',
+    },
+    {
+      name: 'Republic of Korea',
+      code: 'kr',
+    },
+    {
+      name: 'North America',
+      code: 'na',
+    },
+  ];
+
+  /**
+   * Search summoner field.
+   */
+  summonerSearch = new FormControl<string>('', {
+    validators: Validators.required,
+  });
+
+  private subscription: Subscription = new Subscription();
+
+  /**
+   * Region selected by the user.
+   */
+  selectedRegion: string = 'default';
+
+  /**
+   * Check if is possible to perform the search
+   */
+  isSearchValid: boolean = true;
+
+  /**
+   * Summoner info retrieve from
+   */
+  summonerInfo?: Summoner
+
+  suggestions?: Suggestion;
+
+  constructor() {}
+
+  ngOnInit(): void {
+    // Subscribe on field changes
+    this.subscription = this.summonerSearch.valueChanges.subscribe((summonerInput) => {
+      if (summonerInput !== null && summonerInput !== "") {
+        this.getSummonerInfoInAllRegions(summonerInput);
+      }
+    });
+  }
+
+  getRegionSelected(e: any): void {
+    this.selectedRegion = e.target.value;
+  }
+
+  searchSummonerByName(): void {
+    if (
+      (this.selectedRegion === 'default' || this.selectedRegion === undefined) ||
+      this.summonerSearch.valid === false
+    ) {
+      this.isSearchValid = false;
+      return;
+    } else {
+      this.isSearchValid = true;
+    }
+
+    this.searchService
+      .getSummonerData(this.selectedRegion, this.summonerSearch.value!)
+      .then((summoner) => {
+        this.summonerInfo = summoner;
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  getSummonerInfoInAllRegions(summoner: string){
+    this.searchService.getAllSummonerData(summoner)
+    .then((summoners) => {
+      this.suggestions = summoners;
+
+      console.log(this.suggestions);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+}

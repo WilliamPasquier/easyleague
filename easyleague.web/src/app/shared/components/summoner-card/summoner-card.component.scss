@@ -2,20 +2,14 @@
 
 .summoner {
     &--container {
+        height: 90px;
         display: flex;
-        align-items: center;
         gap: 1rem;
         padding: 1rem;
+        border-radius: 100px;
         font-size: 1rem;
         background-color: $glaucous;
-        border-radius: 100px;
     }
-
-    // &--aside {
-    //     width: 120px;
-    //     aspect-ratio: 1;
-    //     background-color: $sandy-brown;
-    // }
 
     &--profile-icon {
         width: 90px;

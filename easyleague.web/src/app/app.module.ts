@@ -8,10 +8,10 @@ import { UserComponent } from './features/user/user.component';
 import { ReplayComponent } from './features/replay/replay.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SummonerCardComponent } from './shared/components/summoner-card/summoner-card.component';
-import { SearchBarComponent } from './features/search/components/search-bar/search-bar.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { SummonerSuggestionComponent } from './features/search/components/summoner-suggestion/summoner-suggestion.component';
 
 
 @NgModule({
@@ -21,7 +21,7 @@ import { HttpClientModule } from '@angular/common/http';
     UserComponent,
     ReplayComponent,
     SummonerCardComponent,
-    SearchBarComponent
+    SummonerSuggestionComponent
   ],
   imports: [
     BrowserModule,

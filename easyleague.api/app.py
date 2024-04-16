@@ -1,4 +1,5 @@
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from datetime import datetime
 from flask import Flask
 from flask_cors import CORS
 from easyleaguemodel import Summoner, DateTimeEncoder
@@ -77,7 +78,7 @@ def get_summoner_data(region, username):
         return {}
     
     summoner_json = summoner_result.json()
-    revision_date = datetime.fromtimestamp(round(summoner_result['revisionDate'] / 1000))
+    revision_date = datetime.fromtimestamp(round(summoner_json['revisionDate'] / 1000))
 
     summoner = Summoner.Summoner(
         username,
@@ -101,36 +102,35 @@ def get_summoner_data_all_region(username):
     ]
 
     # EXEMPLE FOR DOCUMENTATION ! 
-    result = []
+    # result = []
 
-    started = time.perf_counter()
-    for region in regions:
-        summoner_result = get_summoner_data(region, username)
-        result.append(json.loads(summoner_result))
-
-    finished = time.perf_counter()
-    
-    result.append({'duration': round(finished - started, 2)}) 
-
-    # result = {
-    #     'regions': [],
-    #     'durations': 0 
-    # }
     # started = time.perf_counter()
-
-    # with ThreadPoolExecutor(max_workers=5) as pool:
-    #     api_call = {pool.submit(get_summoner_data, region, username): region for region in regions}
-    #     for call_index, call in enumerate(as_completed(api_call)):
-    #         summoner_result = call.result()
-
-    #         if summoner_result == {}:
-    #             result['regions'].append({regions[call_index]: None})
-    #         else:
-    #             result['regions'].append({regions[call_index]: json.loads(summoner_result)})
+    # for region in regions:
+    #     summoner_result = get_summoner_data(region, username)
+    #     result.append(json.loads(summoner_result))
 
     # finished = time.perf_counter()
+    
+    # result.append({'duration': round(finished - started, 2)}) 
 
-    # result['durations'] = round(finished - started, 2)
+    result = {
+        'regions': [],
+        'duration': 0 
+    }
+    
+    started = time.perf_counter()
+
+    with ThreadPoolExecutor(max_workers=5) as pool:
+        api_call = {pool.submit(get_summoner_data, region, username): region for region in regions}
+        for call in as_completed(api_call):
+            summoner_result = call.result()
+
+            if summoner_result != {}:
+                result['regions'].append(json.loads(summoner_result))
+
+    finished = time.perf_counter()
+
+    result['duration'] = round(finished - started, 2)
 
     return json.dumps(result)
     

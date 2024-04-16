@@ -1,0 +1,24 @@
+<div class="suggestion--container">
+    <div class="suggestion--aside">
+        <img 
+            [attr.src]="'https://raw.communitydragon.org/14.7/game/assets/ux/summonericons/profileicon' + summonerSuggestion?.profileIconId + '.png'" 
+            alt="Summoner suggestion profile icon image"
+            class="suggestion--profile-icon"
+        />
+    </div>
+    <div class="suggestion--content">
+        <span class="suggestion--name">
+            {{ summonerSuggestion?.name }}
+            <span class="suggestion--level">
+                Level  {{ summonerSuggestion?.summonerLevel }}
+            </span>
+        </span>
+        <span class="summoner--region-code">
+            <fa-icon [icon]="faEarthEurope"></fa-icon>
+            {{ regionText?.code }}
+            <span class="summoner--region-name">
+                {{ regionText?.name }}
+            </span>
+        </span>
+    </div>
+</div>
