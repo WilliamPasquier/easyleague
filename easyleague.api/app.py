@@ -1,5 +1,7 @@
 from datetime import datetime
 from flask import Flask
+from flask_cors import CORS
+from easyleaguemodel import Summoner, DateTimeEncoder
 import json
 import os
 import requests
@@ -9,11 +11,27 @@ def get_region_summoner(region):
     '''Encode la région en fonction du paramètre reçu'''
     if(region == 'euw'):
         return 'euw1'
+    if(region == 'eun'):
+        return 'eun1'
+    if(region == 'jp'):
+        return 'jp1'
+    if(region == 'kr'):
+        return 'kr'
+    if(region == 'na'):
+        return 'na1'
     
 def get_region_matches(region):
     '''Encode la région en fonction du paramètre reçu'''
     if(region == 'euw'):
         return 'europe'
+    if(region == 'eun'):
+        return 'europe'
+    if(region == 'jp'):
+        return 'asia'
+    if(region == 'kr'):
+        return 'asia'
+    if(region == 'na'):
+        return 'americas'
 
 def create_header():
     '''Construit le header de l'app en fournissant le token d'authentification'''
@@ -38,21 +56,32 @@ def save_json(content, username, id, file_type='timeline'):
 
 app = Flask(__name__)
 app.debug = True
+CORS(app)
+
 ########################################################
 # Défintion des routes de l'application
 ########################################################
 @app.route('/<region>/summoner/<username>', methods=['GET', 'POST'])
 def get_summoner_data(region, username):
     '''Récupère les informations d'un "Summoner" via le pseudo et la région (europe pour l'instant)'''
-    region = get_region_summoner(region)
+    region_api = get_region_summoner(region)
 
-    url = f'https://{region}.api.riotgames.com/lol/summoner/v4/summoners/by-name/{username}'
+    url = f'https://{region_api}.api.riotgames.com/lol/summoner/v4/summoners/by-name/{username}'
 
     headers = create_header()
 
-    summoner = requests.get(url, headers=headers)
+    summoner_result = requests.get(url, headers=headers).json()
+    revision_date = datetime.fromtimestamp(round(summoner_result['revisionDate'] / 1000))
 
-    return summoner.json()
+    summoner = Summoner.Summoner(
+        username,
+        summoner_result['profileIconId'],
+        summoner_result['summonerLevel'],
+        revision_date,
+        region.upper()
+    )
+
+    return json.dumps(summoner.__dict__, indent=4, cls=DateTimeEncoder.DateTimeEncoder)
 
 @app.route('/<region>/summoner/<username>/matches', methods=['GET', 'POST'])
 def get_matches(region, username):
@@ -107,6 +136,14 @@ if __name__ == '__main__':
         sys.exit(1)
 
     riot_token = sys.argv[1]
+
+    headers = create_header()
+    url = f'https://euw1.api.riotgames.com/lol/summoner/v4/summoners/by-name/BetterCallHomie'
+    resp = requests.get(url, headers=headers)
+
+    if(resp.status_code != 200):
+        sys.stderr.write('Response from Riot API not "200 OK" Please check your token')
+        sys.exit(1)
 
     app.run(host='0.0.0.0', port=7000)
     

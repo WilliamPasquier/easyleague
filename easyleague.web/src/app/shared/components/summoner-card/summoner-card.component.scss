@@ -1,0 +1,44 @@
+@import '../../../../styles/variables.scss';
+
+.summoner {
+    &--container {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 2rem;
+        font-size: 1rem;
+        background-color: $glaucous;
+        border-radius: 100px;
+    }
+
+    // &--aside {
+    //     width: 120px;
+    //     aspect-ratio: 1;
+    //     background-color: $sandy-brown;
+    // }
+
+    &--profile-icon {
+        width: 90px;
+        aspect-ratio: 1;
+        border-radius: 100%;
+    }
+        
+    &--content {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    &--name {
+        font-size: 1.5rem;
+        font-weight: 500;
+    }
+
+    &--level {
+        font-weight: 100;
+    }
+}
+
+fa-icon {
+    margin-right: 0.5rem;
+}
