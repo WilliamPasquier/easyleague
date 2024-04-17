@@ -8,6 +8,10 @@
         padding: 0.5rem;
         border-radius: 100px;
         background-color: $glaucous;
+
+        &:hover {
+            cursor: pointer;
+        }
     }  
 
     &--container > * {
@@ -35,11 +39,13 @@
     }
 
     &--region-code {
-        font-size: 1.25rem;
+        font-size: 1rem;
         font-weight: 500;
+        text-transform: uppercase;
     }
 
     &--region-name {
-        font-weight: 100;   
+        font-weight: 100;
+        text-transform: none;   
     }
 }

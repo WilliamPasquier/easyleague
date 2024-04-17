@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnDestroy, OnInit, Output, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { Region } from '@shared/models/region.model';
 import { Summoner } from '@shared/models/summoner.model';
@@ -52,6 +52,13 @@ export class SearchComponent implements OnInit, OnDestroy {
     validators: Validators.required,
   });
 
+  /**
+   * Region summoner field.
+   */
+  summonerRegion = new FormControl<string>('', {
+    validators: Validators.required,
+  });
+
   private subscription: Subscription = new Subscription();
 
   /**
@@ -74,6 +81,8 @@ export class SearchComponent implements OnInit, OnDestroy {
   constructor() {}
 
   ngOnInit(): void {
+    this.summonerRegion.patchValue(this.selectedRegion);
+
     // Subscribe on field changes
     this.subscription = this.summonerSearch.valueChanges.subscribe((summonerInput) => {
       if (summonerInput !== null && summonerInput !== "") {
@@ -117,6 +126,14 @@ export class SearchComponent implements OnInit, OnDestroy {
     .catch((error) => {
       console.error(error);
     });
+  }
+
+  displaySelectedSUggestion(suggestedSummoner: Summoner): void {
+    this.summonerInfo = suggestedSummoner;
+
+    const index = this.regionOptions.findIndex((r) => r.code === this.summonerInfo?.region);
+
+    this.summonerRegion.patchValue(this.regionOptions[index].code)
   }
 
   ngOnDestroy(): void {

@@ -85,7 +85,7 @@ def get_summoner_data(region, username):
         summoner_json['profileIconId'],
         summoner_json['summonerLevel'],
         revision_date,
-        region.upper()
+        region
     )
 
     return json.dumps(summoner.__dict__, indent=4, cls=DateTimeEncoder.DateTimeEncoder)
@@ -101,23 +101,23 @@ def get_summoner_data_all_region(username):
         'na',
     ]
 
-    # EXEMPLE FOR DOCUMENTATION ! 
-    # result = []
-
-    # started = time.perf_counter()
-    # for region in regions:
-    #     summoner_result = get_summoner_data(region, username)
-    #     result.append(json.loads(summoner_result))
-
-    # finished = time.perf_counter()
-    
-    # result.append({'duration': round(finished - started, 2)}) 
-
     result = {
         'regions': [],
         'duration': 0 
     }
+
+    # EXEMPLE FOR DOCUMENTATION ! 
+    # started = time.perf_counter()
+    # for region in regions:
+    #     summoner_result = get_summoner_data(region, username)
+    #     if summoner_result != {}:
+    #         result['regions'].append(json.loads(summoner_result))
+
+    # finished = time.perf_counter()
     
+    # result['duration'] = round(finished - started, 2)
+
+    # MULTITHREADED VERSION    
     started = time.perf_counter()
 
     with ThreadPoolExecutor(max_workers=5) as pool:

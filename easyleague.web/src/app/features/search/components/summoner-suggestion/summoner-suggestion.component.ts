@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { faEarthEurope } from '@fortawesome/free-solid-svg-icons';
 import { Region } from '@shared/models/region.model';
 import { Summoner } from '@shared/models/summoner.model';
@@ -15,6 +15,8 @@ export class SummonerSuggestionComponent implements OnInit {
    * Summoner info retrieve from
    */
   @Input() summonerSuggestion?: Summoner;
+
+  @Output() selectedSuggestion = new EventEmitter<Summoner>();
 
   /**
    * List of region.
@@ -52,6 +54,9 @@ export class SummonerSuggestionComponent implements OnInit {
         }
       })
     }
+  }
 
+  selectSuggestion(): void {
+    this.selectedSuggestion.emit(this.summonerSuggestion);
   }
 }

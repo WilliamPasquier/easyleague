@@ -1,4 +1,6 @@
-<div class="summoner--container">
+<div 
+    class="summoner--container"
+>
     <div class="summoner--aside">
         <img 
             [attr.src]="'https://raw.communitydragon.org/14.7/game/assets/ux/summonericons/profileicon' + summonerInfo?.profileIconId + '.png'" 
@@ -13,9 +15,12 @@
                 Level {{ summonerInfo?.summonerLevel }}
             </span>
         </span>
-        <span class="summoner--region">
+        <span class="summoner--region-code">
             <fa-icon [icon]="faEarthEurope"></fa-icon>
-            {{ summonerInfo?.region }}
+            {{ regionText?.code }}
+            <span class="summoner--region-name">
+                {{ regionText?.name }}
+            </span>
         </span>
         <span class="summoner--lastdate">
             <fa-icon [icon]="faCalendar"></fa-icon>

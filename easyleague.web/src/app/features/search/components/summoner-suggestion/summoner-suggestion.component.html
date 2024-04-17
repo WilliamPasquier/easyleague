@@ -1,4 +1,7 @@
-<div class="suggestion--container">
+<div 
+    class="suggestion--container"
+    (click)="selectSuggestion()"
+>
     <div class="suggestion--aside">
         <img 
             [attr.src]="'https://raw.communitydragon.org/14.7/game/assets/ux/summonericons/profileicon' + summonerSuggestion?.profileIconId + '.png'" 
@@ -13,10 +16,10 @@
                 Level  {{ summonerSuggestion?.summonerLevel }}
             </span>
         </span>
-        <span class="summoner--region-code">
+        <span class="suggestion--region-code">
             <fa-icon [icon]="faEarthEurope"></fa-icon>
             {{ regionText?.code }}
-            <span class="summoner--region-name">
+            <span class="suggestion--region-name">
                 {{ regionText?.name }}
             </span>
         </span>

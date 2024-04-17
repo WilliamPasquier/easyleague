@@ -12,7 +12,8 @@
       />
       <select 
         id="summoner-region" 
-        class="search-bar--region" 
+        class="search-bar--region"
+        [formControl]="summonerRegion"
         (change)="getRegionSelected($event)"
       >
         <option 
@@ -27,24 +28,25 @@
           class="search-bar--region-option"
         >{{ regionOption.name }}</option>
       </select>
-      <button class="search-bar--button" (click)="searchSummonerByName()">
+      <button class="search-bar--search-btn" (click)="searchSummonerByName()">
         <fa-icon [icon]="faMagnifyingGlass"></fa-icon>
       </button>
     </div>
     <div 
       class="search-bar--suggestion"
-      *ngIf="suggestions"
+      *ngIf="suggestions && summonerSearch.value"
     >
       <span class="search-bar--duration">
         <fa-icon
           class="search-bar--duration-icon"
           [icon]="faStopwatch"
         ></fa-icon>
-        Found in {{ suggestions.duration }} seconds
+        Found in {{ suggestions.duration }} second(s)
       </span>
       <app-summoner-suggestion
         *ngFor="let suggestion of suggestions.regions"
         [summonerSuggestion]="suggestion"
+        (selectedSuggestion)="displaySelectedSUggestion($event)"
       ></app-summoner-suggestion>
     </div>
   </div>
