@@ -107,7 +107,8 @@ def get_summoner_data(region, username):
         summoner_json['profileIconId'],
         summoner_json['summonerLevel'],
         revision_date,
-        region
+        region,
+        []
     )
 
     return json.dumps(summoner.__dict__, indent=4, cls=DateTimeEncoder.DateTimeEncoder)
