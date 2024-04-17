@@ -15,6 +15,28 @@ def get_region_summoner(region):
         return 'euw1'
     if(region == 'eun'):
         return 'eun1'
+    if(region == 'br'):
+        return 'br1'
+    if(region == 'lan'):
+        return 'la1'
+    if(region == 'las'):
+        return 'la2'
+    if(region == 'oce'):
+        return 'oc1'
+    if(region == 'ru'):
+        return 'ru'
+    if(region == 'tr'):
+        return 'tr1'
+    if(region == 'ph'):
+        return 'ph2'
+    if(region == 'sg'):
+        return 'sg2'
+    if(region == 'tw'):
+        return 'tw2'
+    if(region == 'th'):
+        return 'th2'
+    if(region == 'vn'):
+        return 'vn2'
     if(region == 'jp'):
         return 'jp1'
     if(region == 'kr'):
@@ -96,6 +118,17 @@ def get_summoner_data_all_region(username):
     regions = [
         'euw',
         'eun',
+        'br',
+        'lan',
+        'las',
+        'oce',
+        'ru',
+        'tr',
+        'ph',
+        'sg',
+        'tw',
+        'th',
+        'vn',
         'jp',
         'kr',
         'na',
@@ -120,7 +153,7 @@ def get_summoner_data_all_region(username):
     # MULTITHREADED VERSION    
     started = time.perf_counter()
 
-    with ThreadPoolExecutor(max_workers=5) as pool:
+    with ThreadPoolExecutor(max_workers=16) as pool:
         api_call = {pool.submit(get_summoner_data, region, username): region for region in regions}
         for call in as_completed(api_call):
             summoner_result = call.result()

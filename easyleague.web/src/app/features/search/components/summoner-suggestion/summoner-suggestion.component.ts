@@ -31,6 +31,50 @@ export class SummonerSuggestionComponent implements OnInit {
       code: 'eun',
     },
     {
+      name: 'Brazil',
+      code: 'br',
+    },
+    {
+      name: 'Latin America North',
+      code: 'lan',
+    },
+    {
+      name: 'Latin America South',
+      code: 'las',
+    },
+    {
+      name: 'Oceania',
+      code: 'oce',
+    },
+    {
+      name: 'Russia',
+      code: 'ru',
+    },
+    {
+      name: 'Turkey',
+      code: 'tr',
+    },
+    {
+      name: 'The Philippines',
+      code: 'ph',
+    },
+    {
+      name: 'Singapore, Malaysia, & Indonesia',
+      code: 'sg',
+    },
+    {
+      name: 'Taiwan, Hong Kong, and Macao',
+      code: 'tw',
+    },
+    {
+      name: 'Thailand',
+      code: 'th',
+    },
+    {
+      name: 'Vietnam',
+      code: 'vn',
+    },
+    {
       name: 'Japan',
       code: 'jp',
     },
