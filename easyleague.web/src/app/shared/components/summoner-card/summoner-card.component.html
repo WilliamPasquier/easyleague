@@ -26,5 +26,36 @@
             <fa-icon [icon]="faCalendar"></fa-icon>
             {{ lastDateConnection }}
         </span>
+        <span
+            class="summoner--ranks"
+        >
+            <fa-icon [icon]="faMedal"></fa-icon>
+            <div 
+                *ngIf="summonerInfo?.ranks; else noRanks"
+                class="summoner--ranks-container"
+            >
+                <div 
+                    class="summoner-rank"
+                    *ngFor="let rank of summonerInfo?.ranks"
+                >
+                    <span class="summoner--rank-queue-name">
+                        {{rank.queueName}} -
+                        <span class="summoner--rank-tier">
+                            {{rank.tier}}
+                            <span class="summoner--rank-rank">
+                                {{rank.rank}}
+                            </span>
+                        </span>
+                    </span>
+                </div>
+            </div>
+            <ng-template
+                #noRanks
+            >
+                <span class="summoner--no-ranks">
+                    No rank found
+                </span>
+            </ng-template>
+        </span>
     </div>
 </div>

@@ -140,10 +140,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   searchSummonerByName(): void {
-    if (
-      (this.selectedRegion === 'default' || this.selectedRegion === undefined) ||
-      this.summonerSearch.valid === false
-    ) {
+    if (this.selectedRegion === 'default' || !this.summonerSearch.valid) {
       this.isSearchValid = false;
       return;
     } else {
@@ -154,6 +151,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       .getSummonerData(this.selectedRegion, this.summonerSearch.value!)
       .then((summoner) => {
         this.summonerInfo = summoner;
+        this.suggestions = undefined;
       })
       .catch((error) => {
         console.error(error);
@@ -178,6 +176,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     const index = this.regionOptions.findIndex((r) => r.code === this.summonerInfo?.region);
 
     this.summonerRegion.patchValue(this.regionOptions[index].code)
+    this.selectedRegion = this.regionOptions[index].code
   }
 
   ngOnDestroy(): void {

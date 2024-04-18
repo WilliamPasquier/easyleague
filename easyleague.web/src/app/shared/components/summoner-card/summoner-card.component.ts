@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { faCalendar, faEarthEurope } from '@fortawesome/free-solid-svg-icons';
+import { faCalendar, faEarthEurope, faMedal } from '@fortawesome/free-solid-svg-icons';
 import { Region } from '@shared/models/region.model';
 import { Summoner } from '@shared/models/summoner.model';
 
@@ -11,6 +11,7 @@ import { Summoner } from '@shared/models/summoner.model';
 export class SummonerCardComponent implements OnInit, OnChanges {
   faEarthEurope = faEarthEurope;
   faCalendar = faCalendar;
+  faMedal = faMedal;
   
   /**
    * Summoner info retrieve from

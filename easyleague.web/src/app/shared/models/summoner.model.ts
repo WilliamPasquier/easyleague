@@ -1,3 +1,5 @@
+import { Rank } from "./rank.model";
+
 /**
  * Summoner interface.
  */
@@ -7,4 +9,5 @@ export interface Summoner {
     summonerLevel: number;
     lastDateConnection: number;
     region: string;
+    ranks: Array<Rank>
 }
