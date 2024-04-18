@@ -67,6 +67,12 @@ def create_header():
         'X-Riot-Token': f'{riot_token}'
     }
 
+def get_queue_name(queue_type):
+    if (queue_type == 'RANKED_SOLO_5x5'):
+        return 'SoloQ / DuoQ'
+    elif (queue_type == 'RANKED_FLEX_SR'):
+        return 'Flex 5v5'
+
 def save_json(content, username, id, file_type='timeline'):
     path = os.getcwd() + f'\\json_test\\{file_type}'
 
@@ -88,10 +94,10 @@ CORS(app)
 @app.route('/<region>/summoner/<username>', methods=['GET', 'POST'])
 def get_summoner_data(region, username):
     '''Récupère les informations d'un "Summoner" via le pseudo et la région (europe pour l'instant)'''
+    
+    ranks = []
     region_api = get_region_summoner(region)
-
     url = f'https://{region_api}.api.riotgames.com/lol/summoner/v4/summoners/by-name/{username}'
-
     headers = create_header()
 
     summoner_result = requests.get(url, headers=headers)
@@ -102,13 +108,34 @@ def get_summoner_data(region, username):
     summoner_json = summoner_result.json()
     revision_date = datetime.fromtimestamp(round(summoner_json['revisionDate'] / 1000))
 
+    summoner_id = summoner_json['id']
+
+    url_rank = f'https://{region_api}.api.riotgames.com/lol/league/v4/entries/by-summoner/{summoner_id}'
+
+    rank_json = requests.get(url_rank, headers=headers).json()
+
+    for rank in rank_json:
+        queue_type = get_queue_name(rank['queueType'])
+
+        r = Summoner.Rank(
+            rank['queueType'],
+            queue_type,
+            rank['tier'],
+            rank['rank'],
+            rank['leaguePoints'],
+            rank['wins'],
+            rank['losses']
+        )
+
+        ranks.append(r.__dict__)
+
     summoner = Summoner.Summoner(
         username,
         summoner_json['profileIconId'],
         summoner_json['summonerLevel'],
         revision_date,
         region,
-        []
+        ranks
     )
 
     return json.dumps(summoner.__dict__, indent=4, cls=DateTimeEncoder.DateTimeEncoder)

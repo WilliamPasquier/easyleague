@@ -4,6 +4,7 @@ class Rank:
     def __init__(
             self,
             queue_type: str,
+            queue_name: str,
             tier: str,
             rank: str,
             league_points: int,
@@ -11,6 +12,7 @@ class Rank:
             losses: int
         ):
         self.queueType = queue_type
+        self.queueName = queue_name
         self.tier = tier
         self.rank = rank
         self.leaguePoints = league_points
