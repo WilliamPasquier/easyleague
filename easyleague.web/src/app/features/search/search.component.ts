@@ -122,7 +122,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   suggestions?: Suggestion;
 
-  constructor() {}
+  constructor() { }
 
   ngOnInit(): void {
     this.summonerRegion.patchValue(this.selectedRegion);
@@ -147,6 +147,11 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.isSearchValid = true;
     }
 
+    if (this.summonerInfo) {
+      this.suggestions = undefined;
+      return;
+    }
+
     this.searchService
       .getSummonerData(this.selectedRegion, this.summonerSearch.value!)
       .then((summoner) => {
@@ -158,16 +163,16 @@ export class SearchComponent implements OnInit, OnDestroy {
       });
   }
 
-  getSummonerInfoInAllRegions(summoner: string){
+  getSummonerInfoInAllRegions(summoner: string) {
     this.searchService.getAllSummonerData(summoner)
-    .then((summoners) => {
-      this.suggestions = summoners;
+      .then((summoners) => {
+        this.suggestions = summoners;
 
-      console.log(this.suggestions);
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+        console.log(this.suggestions);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
 
   displaySelectedSUggestion(suggestedSummoner: Summoner): void {

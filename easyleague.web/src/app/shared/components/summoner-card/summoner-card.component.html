@@ -31,7 +31,7 @@
         >
             <fa-icon [icon]="faMedal"></fa-icon>
             <div 
-                *ngIf="summonerInfo?.ranks; else noRanks"
+                *ngIf="hasRank; else noRanks"
                 class="summoner--ranks-container"
             >
                 <div 
@@ -39,7 +39,7 @@
                     *ngFor="let rank of summonerInfo?.ranks"
                 >
                     <span class="summoner--rank-queue-name">
-                        {{rank.queueName}} -
+                        {{rank.queueName}}
                         <span class="summoner--rank-tier">
                             {{rank.tier}}
                             <span class="summoner--rank-rank">
@@ -49,11 +49,9 @@
                     </span>
                 </div>
             </div>
-            <ng-template
-                #noRanks
-            >
+            <ng-template #noRanks>
                 <span class="summoner--no-ranks">
-                    No rank found
+                    Unranked
                 </span>
             </ng-template>
         </span>
