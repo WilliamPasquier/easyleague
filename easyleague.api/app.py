@@ -13,48 +13,70 @@ def get_region_summoner(region):
     '''Encode la région en fonction du paramètre reçu'''
     if(region == 'euw'):
         return 'euw1'
-    if(region == 'eun'):
+    elif(region == 'eun'):
         return 'eun1'
-    if(region == 'br'):
+    elif(region == 'br'):
         return 'br1'
-    if(region == 'lan'):
+    elif(region == 'lan'):
         return 'la1'
-    if(region == 'las'):
+    elif(region == 'las'):
         return 'la2'
-    if(region == 'oce'):
+    elif(region == 'oce'):
         return 'oc1'
-    if(region == 'ru'):
+    elif(region == 'ru'):
         return 'ru'
-    if(region == 'tr'):
+    elif(region == 'tr'):
         return 'tr1'
-    if(region == 'ph'):
+    elif(region == 'ph'):
         return 'ph2'
-    if(region == 'sg'):
+    elif(region == 'sg'):
         return 'sg2'
-    if(region == 'tw'):
+    elif(region == 'tw'):
         return 'tw2'
-    if(region == 'th'):
+    elif(region == 'th'):
         return 'th2'
-    if(region == 'vn'):
+    elif(region == 'vn'):
         return 'vn2'
-    if(region == 'jp'):
+    elif(region == 'jp'):
         return 'jp1'
-    if(region == 'kr'):
+    elif(region == 'kr'):
         return 'kr'
-    if(region == 'na'):
+    elif(region == 'na'):
         return 'na1'
     
 def get_region_matches(region):
     '''Encode la région en fonction du paramètre reçu'''
     if(region == 'euw'):
         return 'europe'
-    if(region == 'eun'):
+    elif(region == 'eun'):
         return 'europe'
-    if(region == 'jp'):
+    elif(region == 'br'):
+        return 'americas'
+    elif(region == 'lan'):
+        return 'americas'
+    elif(region == 'las'):
+        return 'americas'
+    elif(region == 'oce'):
+        return 'sea'
+    elif(region == 'ru'):
+        return 'europe'
+    elif(region == 'tr'):
+        return 'europe'
+    elif(region == 'ph'):
+        return 'sea'
+    elif(region == 'sg'):
+        return 'sea'
+    elif(region == 'tw'):
+        return 'sea'
+    elif(region == 'th'):
+        return 'sea'
+    elif(region == 'vn'):
+        return 'sea'
+    elif(region == 'jp'):
         return 'asia'
-    if(region == 'kr'):
+    elif(region == 'kr'):
         return 'asia'
-    if(region == 'na'):
+    elif(region == 'na'):
         return 'americas'
 
 def create_header():
