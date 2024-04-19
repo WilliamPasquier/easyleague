@@ -62,8 +62,13 @@
 
   <div class="search--result">
     <app-summoner-card 
-      *ngIf="summonerInfo"
+      *ngIf="summonerInfo; else noSummoner"
       [summonerInfo]="summonerInfo"
     ></app-summoner-card>
+    <ng-template 
+      class="search--no-result" 
+      #noSummoner>
+      <span>0 Results</span>
+    </ng-template>
   </div>
 </div>
