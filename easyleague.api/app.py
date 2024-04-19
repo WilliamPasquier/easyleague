@@ -1,3 +1,4 @@
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 from flask import Flask
 from flask_cors import CORS
@@ -6,6 +7,7 @@ import json
 import os
 import requests
 import sys
+import time
 
 def get_region_summoner(region):
     '''Encode la région en fonction du paramètre reçu'''
@@ -13,6 +15,28 @@ def get_region_summoner(region):
         return 'euw1'
     if(region == 'eun'):
         return 'eun1'
+    if(region == 'br'):
+        return 'br1'
+    if(region == 'lan'):
+        return 'la1'
+    if(region == 'las'):
+        return 'la2'
+    if(region == 'oce'):
+        return 'oc1'
+    if(region == 'ru'):
+        return 'ru'
+    if(region == 'tr'):
+        return 'tr1'
+    if(region == 'ph'):
+        return 'ph2'
+    if(region == 'sg'):
+        return 'sg2'
+    if(region == 'tw'):
+        return 'tw2'
+    if(region == 'th'):
+        return 'th2'
+    if(region == 'vn'):
+        return 'vn2'
     if(region == 'jp'):
         return 'jp1'
     if(region == 'kr'):
@@ -43,6 +67,12 @@ def create_header():
         'X-Riot-Token': f'{riot_token}'
     }
 
+def get_queue_name(queue_type):
+    if (queue_type == 'RANKED_SOLO_5x5'):
+        return 'SoloQ / DuoQ'
+    elif (queue_type == 'RANKED_FLEX_SR'):
+        return 'Flex 5v5'
+
 def save_json(content, username, id, file_type='timeline'):
     path = os.getcwd() + f'\\json_test\\{file_type}'
 
@@ -64,24 +94,107 @@ CORS(app)
 @app.route('/<region>/summoner/<username>', methods=['GET', 'POST'])
 def get_summoner_data(region, username):
     '''Récupère les informations d'un "Summoner" via le pseudo et la région (europe pour l'instant)'''
+    
+    ranks = []
     region_api = get_region_summoner(region)
-
     url = f'https://{region_api}.api.riotgames.com/lol/summoner/v4/summoners/by-name/{username}'
-
     headers = create_header()
 
-    summoner_result = requests.get(url, headers=headers).json()
-    revision_date = datetime.fromtimestamp(round(summoner_result['revisionDate'] / 1000))
+    summoner_result = requests.get(url, headers=headers)
+
+    if summoner_result.status_code == 404:
+        return {}
+    
+    summoner_json = summoner_result.json()
+    revision_date = datetime.fromtimestamp(round(summoner_json['revisionDate'] / 1000))
+
+    summoner_id = summoner_json['id']
+
+    url_rank = f'https://{region_api}.api.riotgames.com/lol/league/v4/entries/by-summoner/{summoner_id}'
+
+    rank_json = requests.get(url_rank, headers=headers).json()
+
+    for rank in rank_json:
+        queue_type = get_queue_name(rank['queueType'])
+
+        r = Summoner.Rank(
+            rank['queueType'],
+            queue_type,
+            rank['tier'],
+            rank['rank'],
+            rank['leaguePoints'],
+            rank['wins'],
+            rank['losses']
+        )
+
+        ranks.append(r.__dict__)
 
     summoner = Summoner.Summoner(
         username,
-        summoner_result['profileIconId'],
-        summoner_result['summonerLevel'],
+        summoner_json['profileIconId'],
+        summoner_json['summonerLevel'],
         revision_date,
-        region.upper()
+        region,
+        ranks
     )
 
     return json.dumps(summoner.__dict__, indent=4, cls=DateTimeEncoder.DateTimeEncoder)
+
+@app.route('/summoner/<username>/all', methods=['GET', 'POST'])
+def get_summoner_data_all_region(username):
+    ''''''
+    regions = [
+        'euw',
+        'eun',
+        'br',
+        'lan',
+        'las',
+        'oce',
+        'ru',
+        'tr',
+        'ph',
+        'sg',
+        'tw',
+        'th',
+        'vn',
+        'jp',
+        'kr',
+        'na',
+    ]
+
+    result = {
+        'regions': [],
+        'duration': 0 
+    }
+
+    # EXEMPLE FOR DOCUMENTATION ! 
+    # started = time.perf_counter()
+    # for region in regions:
+    #     summoner_result = get_summoner_data(region, username)
+    #     if summoner_result != {}:
+    #         result['regions'].append(json.loads(summoner_result))
+
+    # finished = time.perf_counter()
+    
+    # result['duration'] = round(finished - started, 2)
+
+    # MULTITHREADED VERSION    
+    started = time.perf_counter()
+
+    with ThreadPoolExecutor(max_workers=16) as pool:
+        api_call = {pool.submit(get_summoner_data, region, username): region for region in regions}
+        for call in as_completed(api_call):
+            summoner_result = call.result()
+
+            if summoner_result != {}:
+                result['regions'].append(json.loads(summoner_result))
+
+    finished = time.perf_counter()
+
+    result['duration'] = round(finished - started, 2)
+
+    return json.dumps(result)
+    
 
 @app.route('/<region>/summoner/<username>/matches', methods=['GET', 'POST'])
 def get_matches(region, username):

@@ -1,28 +1,26 @@
-import { AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { faCalendar, faEarthEurope, faMedal } from '@fortawesome/free-solid-svg-icons';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { faEarthEurope } from '@fortawesome/free-solid-svg-icons';
 import { Region } from '@shared/models/region.model';
 import { Summoner } from '@shared/models/summoner.model';
 
 @Component({
-  selector: 'app-summoner-card',
-  templateUrl: './summoner-card.component.html',
-  styleUrls: ['./summoner-card.component.scss'],
+  selector: 'app-summoner-suggestion',
+  templateUrl: './summoner-suggestion.component.html',
+  styleUrls: ['./summoner-suggestion.component.scss']
 })
-export class SummonerCardComponent implements OnInit, OnChanges {
+export class SummonerSuggestionComponent implements OnInit {
   faEarthEurope = faEarthEurope;
-  faCalendar = faCalendar;
-  faMedal = faMedal;
-  
+
   /**
    * Summoner info retrieve from
-  */
-  @Input() summonerInfo?: Summoner;
-  
-  /**
-   * Last connection date
-  */
-  lastDateConnection?: string;
+   */
+  @Input() summonerSuggestion?: Summoner;
 
+  @Output() selectedSuggestion = new EventEmitter<Summoner>();
+
+  /**
+   * List of region.
+   */
   regionOptions: Array<Region> = [
     {
       name: 'Europe West',
@@ -89,41 +87,20 @@ export class SummonerCardComponent implements OnInit, OnChanges {
       code: 'na',
     },
   ];
-  
+
   regionText?: Region;
 
-  hasRank: boolean = false
-  
   ngOnInit(): void {
-    if (this.summonerInfo !== undefined) {
+    if (this.summonerSuggestion !== undefined) {
       this.regionOptions.forEach((region) => {
-        if (region.code === this.summonerInfo?.region) {
+        if (region.code === this.summonerSuggestion?.region) {
           this.regionText = region;
         }
       })
-
-      if (this.summonerInfo?.ranks.length >= 1) {
-        this.hasRank = true;
-      } else {
-        this.hasRank = false;
-      }
-    }
-
-    const options: Intl.DateTimeFormatOptions = {
-      day: 'numeric',
-      weekday: 'long',
-      month: 'long',
-      year: 'numeric',
-    };
-
-    if (this.summonerInfo && this.summonerInfo.lastDateConnection) {
-      this.lastDateConnection = new Date(
-        this.summonerInfo.lastDateConnection
-      ).toLocaleString('en-GB', options);
     }
   }
-  
-  ngOnChanges(changes: SimpleChanges): void {
-    this.ngOnInit();
+
+  selectSuggestion(): void {
+    this.selectedSuggestion.emit(this.summonerSuggestion);
   }
 }
