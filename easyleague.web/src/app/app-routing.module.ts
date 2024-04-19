@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { SearchComponent } from './features/search/search.component';
-import { UserComponent } from './features/user/user.component';
 import { ReplayComponent } from './features/replay/replay.component';
 import { RoutePath } from '@shared/models/route-path.model';
+import { SummonerComponent } from './features/summoner/summoner.component';
 
 const routes: Routes = [
   {
@@ -16,8 +16,8 @@ const routes: Routes = [
     component: SearchComponent,
   },
   {
-    path: RoutePath.User,
-    component: UserComponent,
+    path: RoutePath.Summoner,
+    component: SummonerComponent,
   },
   {
     path: RoutePath.Replay,

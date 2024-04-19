@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { UserComponent } from './user.component';
+import { SummonerComponent } from './summoner.component';
 
-describe('UserComponent', () => {
-  let component: UserComponent;
-  let fixture: ComponentFixture<UserComponent>;
+describe('SummonerComponent', () => {
+  let component: SummonerComponent;
+  let fixture: ComponentFixture<SummonerComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [UserComponent]
+      declarations: [SummonerComponent]
     });
-    fixture = TestBed.createComponent(UserComponent);
+    fixture = TestBed.createComponent(SummonerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

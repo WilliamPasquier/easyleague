@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Summoner } from '@shared/models/summoner.model';
 import { environment } from 'src/environments/environment.development';
-import { Suggestion } from '../models/suggestion.model';
+import { Suggestion } from '../../features/search/models/suggestion.model';
 
 @Injectable({
   providedIn: 'root'

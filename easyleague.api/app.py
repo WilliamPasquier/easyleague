@@ -84,6 +84,31 @@ def save_json(content, username, id, file_type='timeline'):
     with open(file_path, 'w') as file:
         json.dump(content, file, indent=4)
 
+def get_summoner_puuid(region, username):
+    region_api = get_region_summoner(region)
+    url= f'https://{region_api}.api.riotgames.com/lol/summoner/v4/summoners/by-name/{username}'
+    headers = create_header()
+
+    r = requests.get(url, headers=headers).json()
+
+    return r['puuid']
+
+def get_matches(region, username):
+    '''Récupère les ids des 20 dernières parties du joueur via le pseudo'''
+    region_matches = get_region_matches(region)
+    puuid = get_summoner_puuid(region, username)
+
+    headers = create_header()
+
+    url = f'https://{region_matches}.api.riotgames.com/lol/match/v5/matches/by-puuid/{puuid}/ids?start=0&count=20'
+
+    matches = requests.get(url, headers=headers).json()
+
+    return matches
+
+def get_summoner_by_puuid(region, puuid):
+    print('test')
+
 app = Flask(__name__)
 app.debug = True
 CORS(app)
@@ -129,13 +154,16 @@ def get_summoner_data(region, username):
 
         ranks.append(r.__dict__)
 
+    matches = get_matches(region, username)
+
     summoner = Summoner.Summoner(
         username,
         summoner_json['profileIconId'],
         summoner_json['summonerLevel'],
         revision_date,
         region,
-        ranks
+        ranks,
+        matches
     )
 
     return json.dumps(summoner.__dict__, indent=4, cls=DateTimeEncoder.DateTimeEncoder)
@@ -194,21 +222,6 @@ def get_summoner_data_all_region(username):
     result['duration'] = round(finished - started, 2)
 
     return json.dumps(result)
-    
-
-@app.route('/<region>/summoner/<username>/matches', methods=['GET', 'POST'])
-def get_matches(region, username):
-    '''Récupère les ids des 20 dernières parties du joueur via le pseudo'''
-    region_matches = get_region_matches(region)
-    puuid = get_summoner_data(region, username)['puuid']
-
-    headers = create_header()
-
-    url = f'https://{region_matches}.api.riotgames.com/lol/match/v5/matches/by-puuid/{puuid}/ids?start=0&count=20'
-
-    matches = requests.get(url, headers=headers).json()
-
-    return matches
 
 @app.route('/<region>/summoner/<username>/match/<id>', methods=['GET', 'POST'])
 def get_match_info(region, username, id):

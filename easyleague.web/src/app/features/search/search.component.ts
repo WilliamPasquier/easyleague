@@ -3,7 +3,7 @@ import { FormControl, Validators } from '@angular/forms';
 import { Region } from '@shared/models/region.model';
 import { Summoner } from '@shared/models/summoner.model';
 import { Subscription, debounceTime, distinctUntilChanged } from 'rxjs';
-import { SearchService } from './services/search.service';
+import { SearchService } from '../../shared/services/search.service';
 import { faCircleExclamation, faMagnifyingGlass, faStopwatch } from '@fortawesome/free-solid-svg-icons';
 import { Suggestion } from './models/suggestion.model';
 

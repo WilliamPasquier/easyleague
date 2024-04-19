@@ -3,6 +3,6 @@
  */
 export const enum RoutePath {
   Search = 'search',
-  User = 'user',
+  Summoner = 'summoner',
   Replay = 'replay',
 }

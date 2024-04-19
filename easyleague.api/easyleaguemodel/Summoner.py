@@ -27,7 +27,8 @@ class Summoner:
             summoner_level: int, 
             last_date_connection: date,
             region: str,
-            ranks: [Rank] # type: ignore
+            ranks: [Rank], # type: ignore
+            matches: [str] # type: ignore
         ):
         self.name = name
         self.profileIconId = profile_icon_id
@@ -35,3 +36,5 @@ class Summoner:
         self.lastDateConnection = last_date_connection
         self.region = region
         self.ranks = ranks
+        self.matches = matches
+        
