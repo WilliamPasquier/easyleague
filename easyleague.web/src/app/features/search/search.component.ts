@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { Region } from '@shared/models/region.model';
 import { Summoner } from '@shared/models/summoner.model';
-import { Subscription } from 'rxjs';
+import { Subscription, debounceTime, distinctUntilChanged } from 'rxjs';
 import { SearchService } from './services/search.service';
 import { faCircleExclamation, faMagnifyingGlass, faStopwatch } from '@fortawesome/free-solid-svg-icons';
 import { Suggestion } from './models/suggestion.model';
@@ -128,8 +128,13 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.summonerRegion.patchValue(this.selectedRegion);
 
     // Subscribe on field changes
-    this.subscription = this.summonerSearch.valueChanges.subscribe((summonerInput) => {
-      if (summonerInput !== null && summonerInput !== "") {
+    this.subscription = this.summonerSearch.valueChanges
+   .pipe(
+      debounceTime(500),
+      distinctUntilChanged()
+    )
+   .subscribe((summonerInput) => {
+      if (summonerInput!== null && summonerInput!== "") {
         this.getSummonerInfoInAllRegions(summonerInput);
       }
     });
