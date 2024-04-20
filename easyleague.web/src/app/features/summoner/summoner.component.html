@@ -1,1 +1,15 @@
-<p>summoner works!</p>
+<div class="summoner-container">
+    <div class="summoner--header">
+        <img 
+            [attr.src]="'https://raw.communitydragon.org/14.7/game/assets/ux/summonericons/profileicon' + summonerInfo?.profileIconId + '.png'"
+            alt="Summoner profile icon image" 
+            class="summoner--image"
+        >
+        <div class="summoner--content">
+            <h1 class="summoner--name">
+                {{ summonerInfo?.name }}
+                <span class="summoner--level">Level {{ summonerInfo?.summonerLevel }}</span>
+            </h1>
+        </div>
+    </div>
+</div>
