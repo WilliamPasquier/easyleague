@@ -48,11 +48,11 @@ def get_region_matches(region):
     '''Encode la région en fonction du paramètre reçu'''
     if region in 'euw|eun|ru|tr':
         return 'europe'
-    elif region == 'br|lan|las|na':
+    elif region in 'br|lan|las|na':
         return 'americas'
-    elif region == 'oce|ph|sg|tw|th|vn':
+    elif region in 'oce|ph|sg|tw|th|vn':
         return 'sea'
-    elif region == 'jp|kr':
+    elif region in 'jp|kr':
         return 'asia'
 
 def create_header():
