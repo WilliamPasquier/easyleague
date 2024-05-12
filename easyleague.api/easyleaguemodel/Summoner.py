@@ -22,16 +22,20 @@ class Rank:
 class Summoner:
     def __init__(
             self, 
-            name: str, 
+            name: str,
+            tag_line: str,
             profile_icon_id: int, 
             summoner_level: int, 
             last_date_connection: date,
             region: str,
-            ranks: [Rank] # type: ignore
+            ranks: [Rank], # type: ignore
+            matches: [str] # type: ignore
         ):
         self.name = name
+        self.tagLine = tag_line
         self.profileIconId = profile_icon_id
         self.summonerLevel = summoner_level
         self.lastDateConnection = last_date_connection
         self.region = region
         self.ranks = ranks
+        self.matches = matches
