@@ -59,6 +59,19 @@
         }
     }
 
+    &--tagline {
+        width: 120px;
+        height: 45px;
+        border: 0;
+        border-left: solid 1px lighten($space-cadet, 50%);
+        color: $space-cadet;
+        padding-left: 0.5rem;
+
+        &:focus {
+            outline: none;
+        }
+    }
+
     &--region {
         border: 0;
         // border-left: 1px solid lightgray;

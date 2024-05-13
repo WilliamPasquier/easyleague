@@ -24,68 +24,20 @@ export class SearchComponent implements OnInit, OnDestroy {
    */
   regionOptions: Array<Region> = [
     {
-      name: 'Europe West',
-      code: 'euw',
+      name: 'AMERICAS',
+      code: 'americas',
     },
     {
-      name: 'Europe Nordic & East',
-      code: 'eun',
+      name: 'ASIA',
+      code: 'asia',
     },
     {
-      name: 'Brazil',
-      code: 'br',
+      name: 'ESPORTS',
+      code: 'esports',
     },
     {
-      name: 'Latin America North',
-      code: 'lan',
-    },
-    {
-      name: 'Latin America South',
-      code: 'las',
-    },
-    {
-      name: 'Oceania',
-      code: 'oce',
-    },
-    {
-      name: 'Russia',
-      code: 'ru',
-    },
-    {
-      name: 'Turkey',
-      code: 'tr',
-    },
-    {
-      name: 'The Philippines',
-      code: 'ph',
-    },
-    {
-      name: 'Singapore, Malaysia, & Indonesia',
-      code: 'sg',
-    },
-    {
-      name: 'Taiwan, Hong Kong, and Macao',
-      code: 'tw',
-    },
-    {
-      name: 'Thailand',
-      code: 'th',
-    },
-    {
-      name: 'Vietnam',
-      code: 'vn',
-    },
-    {
-      name: 'Japan',
-      code: 'jp',
-    },
-    {
-      name: 'Republic of Korea',
-      code: 'kr',
-    },
-    {
-      name: 'North America',
-      code: 'na',
+      name: 'EUROPE',
+      code: 'europe',
     },
   ];
 
@@ -93,6 +45,13 @@ export class SearchComponent implements OnInit, OnDestroy {
    * Search summoner field.
    */
   summonerSearch = new FormControl<string>('', {
+    validators: Validators.required,
+  });
+
+  /**
+   * Search summoner tag line field.
+   */
+  summonerTagLine = new FormControl<string>('', {
     validators: Validators.required,
   });
 
@@ -129,11 +88,11 @@ export class SearchComponent implements OnInit, OnDestroy {
 
     // Subscribe on field changes
     this.subscription = this.summonerSearch.valueChanges
-   .pipe(
+    .pipe(
       debounceTime(500),
       distinctUntilChanged()
     )
-   .subscribe((summonerInput) => {
+    .subscribe((summonerInput) => {
       if (summonerInput!== null && summonerInput!== "") {
         this.getSummonerInfoInAllRegions(summonerInput);
       }
