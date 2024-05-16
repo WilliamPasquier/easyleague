@@ -11,76 +11,52 @@ import time
 
 def get_region_summoner(region):
     '''Encode la région en fonction du paramètre reçu'''
-    if(region == 'euw'):
+    if region == 'euw':
         return 'euw1'
-    elif(region == 'eun'):
+    elif region == 'eun':
         return 'eun1'
-    elif(region == 'br'):
+    elif region == 'br':
         return 'br1'
-    elif(region == 'lan'):
+    elif region == 'lan':
         return 'la1'
-    elif(region == 'las'):
+    elif region == 'las':
         return 'la2'
-    elif(region == 'oce'):
+    elif region == 'oce':
         return 'oc1'
-    elif(region == 'ru'):
+    elif region == 'ru':
         return 'ru'
-    elif(region == 'tr'):
+    elif region == 'tr':
         return 'tr1'
-    elif(region == 'ph'):
+    elif region == 'ph':
         return 'ph2'
-    elif(region == 'sg'):
+    elif region == 'sg':
         return 'sg2'
-    elif(region == 'tw'):
+    elif region == 'tw':
         return 'tw2'
-    elif(region == 'th'):
+    elif region == 'th':
         return 'th2'
-    elif(region == 'vn'):
+    elif region == 'vn':
         return 'vn2'
-    elif(region == 'jp'):
+    elif region == 'jp':
         return 'jp1'
-    elif(region == 'kr'):
+    elif region == 'kr':
         return 'kr'
-    elif(region == 'na'):
+    elif region == 'na':
         return 'na1'
     
 def get_region_matches(region):
     '''Encode la région en fonction du paramètre reçu'''
-    if(region == 'euw'):
+    if region in 'euw|eun|ru|tr':
         return 'europe'
-    elif(region == 'eun'):
-        return 'europe'
-    elif(region == 'br'):
+    elif region in 'br|lan|las|na':
         return 'americas'
-    elif(region == 'lan'):
-        return 'americas'
-    elif(region == 'las'):
-        return 'americas'
-    elif(region == 'oce'):
+    elif region in 'oce|ph|sg|tw|th|vn':
         return 'sea'
-    elif(region == 'ru'):
-        return 'europe'
-    elif(region == 'tr'):
-        return 'europe'
-    elif(region == 'ph'):
-        return 'sea'
-    elif(region == 'sg'):
-        return 'sea'
-    elif(region == 'tw'):
-        return 'sea'
-    elif(region == 'th'):
-        return 'sea'
-    elif(region == 'vn'):
-        return 'sea'
-    elif(region == 'jp'):
+    elif region in 'jp|kr':
         return 'asia'
-    elif(region == 'kr'):
-        return 'asia'
-    elif(region == 'na'):
-        return 'americas'
 
 def create_header():
-    '''Construit le header de l'app en fournissant le token d'authentification'''
+    '''Construit le header de la requête http en fournissant le token RIOT d'authentification'''
     global riot_token
 
     return {
@@ -115,21 +91,24 @@ def get_summoner_puuid(region, username):
 
     return r['puuid']
 
-def get_matches(region, username):
-    '''Récupère les ids des 20 dernières parties du joueur via le pseudo'''
-    region_matches = get_region_matches(region)
-    puuid = get_summoner_puuid(region, username)
-
+def get_summoner_ranks(region, id):
+    region_api = get_region_summoner(region)
+    url_rank = f'https://{region_api}.api.riotgames.com/lol/league/v4/entries/by-summoner/{id}'
     headers = create_header()
 
+    rank_json = requests.get(url_rank, headers=headers).json()
+
+    return rank_json
+
+def get_matches(region, puuid):
+    '''Récupère les ids des 20 dernières parties du joueur via le pseudo'''
+    region_matches = get_region_matches(region)
     url = f'https://{region_matches}.api.riotgames.com/lol/match/v5/matches/by-puuid/{puuid}/ids?start=0&count=20'
+    headers = create_header()
 
     matches = requests.get(url, headers=headers).json()
 
     return matches
-
-def get_summoner_by_puuid(region, puuid):
-    print('test')
 
 app = Flask(__name__)
 app.debug = True
@@ -156,12 +135,11 @@ def get_summoner_data(region, username):
     revision_date = datetime.fromtimestamp(round(summoner_json['revisionDate'] / 1000))
 
     summoner_id = summoner_json['id']
+    summoner_puuid = summoner_json['puuid']
 
-    url_rank = f'https://{region_api}.api.riotgames.com/lol/league/v4/entries/by-summoner/{summoner_id}'
+    ranks = get_summoner_ranks(region, summoner_id)
 
-    rank_json = requests.get(url_rank, headers=headers).json()
-
-    for rank in rank_json:
+    for rank in ranks:
         queue_type = get_queue_name(rank['queueType'])
 
         r = Summoner.Rank(
@@ -176,7 +154,7 @@ def get_summoner_data(region, username):
 
         ranks.append(r.__dict__)
 
-    matches = get_matches(region, username)
+    matches = get_matches(region, summoner_puuid)
 
     summoner = Summoner.Summoner(
         username,
@@ -193,24 +171,7 @@ def get_summoner_data(region, username):
 @app.route('/summoner/<username>/all', methods=['GET', 'POST'])
 def get_summoner_data_all_region(username):
     ''''''
-    regions = [
-        'euw',
-        'eun',
-        'br',
-        'lan',
-        'las',
-        'oce',
-        'ru',
-        'tr',
-        'ph',
-        'sg',
-        'tw',
-        'th',
-        'vn',
-        'jp',
-        'kr',
-        'na',
-    ]
+    global regions
 
     result = {
         'regions': [],
@@ -275,6 +236,125 @@ def get_match_timeline(region, username, id):
 
     return timeline
 
+
+########################################################
+# Défintion des NOUVELLES routes de l'application
+########################################################
+
+def get_summoner_by_puuid(region, puuid):
+    '''Récupère les informations d'un summoner via le puuid'''
+    region_summoner = get_region_summoner(region)
+    url = f'https://{region_summoner}.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/{puuid}'
+    headers = create_header()
+
+    summoner_request = requests.get(url, headers=headers)
+
+    if summoner_request.status_code == 200:
+        summoner_data = summoner_request.json()
+
+        summoner = {
+            'id': summoner_data['id'],
+            'profileIconId': summoner_data['profileIconId'],
+            'revisionDate': round(summoner_data['revisionDate'] / 1000),
+            'summonerLevel': summoner_data['summonerLevel'],
+            'region': region
+        }
+    else:
+        summoner = None
+
+    return summoner
+
+def get_account_puuid(region, gamename, tagline):
+    url = f'https://{region}.api.riotgames.com/riot/account/v1/accounts/by-riot-id/{gamename}/{tagline}'
+    headers = create_header()
+
+    account = requests.get(url, headers=headers).json()
+
+    return account
+
+@app.route('/v2/<account_region>/account/<gamename>/<tagline>', methods=['GET', 'POST'])
+def get_account(account_region, gamename, tagline):
+    '''Récupère le PUUID d'un utilisateur selon sa région, son gameName et son tagLine'''
+    global regions
+
+    result = {
+        'summoner': None,
+        'duration': 0 
+    }
+
+    ranks = []
+    matches = []
+    summoner_data = None
+    summoner_id = None
+    correct_region = None
+    revision_date = None
+
+    started = time.perf_counter()
+
+    account = get_account_puuid(account_region, gamename, tagline)
+    puuid = account['puuid']
+
+    # EXEMPLE FOR DOCUMENTATION ! 
+    # for region in regions:
+    #     summoner_result = get_summoner_by_puuid(region, puuid)
+
+    #     if summoner_result != None:
+    #         summoner_data = summoner_result
+    #         summoner_id = summoner_data['id']
+    #         correct_region = summoner_data['region']
+    #         revision_date = datetime.fromtimestamp(summoner_data['revisionDate'])
+
+    # MULTITHREADED VERSION 
+    with ThreadPoolExecutor(max_workers=16) as pool:
+        requests = {pool.submit(get_summoner_by_puuid, region, puuid): region for region in regions}
+        for request in as_completed(requests):
+            summoner_result = request.result()
+
+            if summoner_result != None:
+                summoner_data = summoner_result
+                summoner_id = summoner_data['id']
+                correct_region = summoner_data['region']
+                revision_date = datetime.fromtimestamp(summoner_data['revisionDate'])
+            
+    ranks_data = get_summoner_ranks(correct_region, summoner_id)
+    for rank in ranks_data:
+        queue_type = get_queue_name(rank['queueType'])
+
+        r = Summoner.Rank(
+            rank['queueType'],
+            queue_type,
+            rank['tier'],
+            rank['rank'],
+            rank['leaguePoints'],
+            rank['wins'],
+            rank['losses']
+        )
+
+        ranks.append(r.__dict__)
+
+    matches = get_matches(correct_region, puuid)
+
+    summoner = Summoner.Summoner(
+        account['gameName'],
+        account['tagLine'],
+        summoner_data['profileIconId'],
+        summoner_data['summonerLevel'],
+        revision_date,
+        correct_region,
+        ranks, 
+        matches
+    )
+
+    result['summoner'] = summoner.__dict__
+
+    finished = time.perf_counter()
+
+    result['duration'] = round(finished - started, 2)
+
+    return json.dumps(result, indent=4, cls=DateTimeEncoder.DateTimeEncoder)
+
+
+
 ############################
 # "Fonction" Principale
 ############################
@@ -285,8 +365,27 @@ if __name__ == '__main__':
 
     riot_token = sys.argv[1]
 
+    regions = [
+        'euw',
+        'eun',
+        'br',
+        'lan',
+        'las',
+        'oce',
+        'ru',
+        'tr',
+        'ph',
+        'sg',
+        'tw',
+        'th',
+        'vn',
+        'jp',
+        'kr',
+        'na',
+    ]
+
     headers = create_header()
-    url = f'https://euw1.api.riotgames.com/lol/summoner/v4/summoners/by-name/BetterCallHomie'
+    url = f'https://europe.api.riotgames.com/riot/account/v1/accounts/by-riot-id/BetterCallHomie/SEXY'
     resp = requests.get(url, headers=headers)
 
     if(resp.status_code != 200):
@@ -294,4 +393,5 @@ if __name__ == '__main__':
         sys.exit(1)
 
     app.run(host='0.0.0.0', port=7000)
+
     

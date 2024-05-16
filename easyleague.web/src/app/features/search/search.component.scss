@@ -30,6 +30,14 @@
     &--result {
         width: 100%;
     }
+
+    &--duration-time {
+        width: 100%;
+        display: flex;
+        justify-content: flex-start;
+        font-style: italic;
+        gap: 0.1rem;
+    }
 }
 
 .search-bar {
@@ -53,6 +61,19 @@
         color: $space-cadet;
         padding-left: 1.5rem;
         border-radius: 100px 0 0 100px;
+
+        &:focus {
+            outline: none;
+        }
+    }
+
+    &--tagline {
+        width: 120px;
+        height: 45px;
+        border: 0;
+        border-left: solid 1px lighten($space-cadet, 50%);
+        color: $space-cadet;
+        padding-left: 0.5rem;
 
         &:focus {
             outline: none;
@@ -111,13 +132,5 @@
         flex-direction: column;
         gap: 1rem;
         overflow-y: auto;
-    }
-
-    &--duration {
-        font-style: italic;
-    }
-
-    &--duration, &--duration-icon {
-        color:  $space-cadet;
     }
 }

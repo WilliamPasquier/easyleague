@@ -24,68 +24,20 @@ export class SearchComponent implements OnInit, OnDestroy {
    */
   regionOptions: Array<Region> = [
     {
-      name: 'Europe West',
-      code: 'euw',
+      name: 'AMERICAS',
+      code: 'americas',
     },
     {
-      name: 'Europe Nordic & East',
-      code: 'eun',
+      name: 'ASIA',
+      code: 'asia',
     },
     {
-      name: 'Brazil',
-      code: 'br',
+      name: 'ESPORTS',
+      code: 'esports',
     },
     {
-      name: 'Latin America North',
-      code: 'lan',
-    },
-    {
-      name: 'Latin America South',
-      code: 'las',
-    },
-    {
-      name: 'Oceania',
-      code: 'oce',
-    },
-    {
-      name: 'Russia',
-      code: 'ru',
-    },
-    {
-      name: 'Turkey',
-      code: 'tr',
-    },
-    {
-      name: 'The Philippines',
-      code: 'ph',
-    },
-    {
-      name: 'Singapore, Malaysia, & Indonesia',
-      code: 'sg',
-    },
-    {
-      name: 'Taiwan, Hong Kong, and Macao',
-      code: 'tw',
-    },
-    {
-      name: 'Thailand',
-      code: 'th',
-    },
-    {
-      name: 'Vietnam',
-      code: 'vn',
-    },
-    {
-      name: 'Japan',
-      code: 'jp',
-    },
-    {
-      name: 'Republic of Korea',
-      code: 'kr',
-    },
-    {
-      name: 'North America',
-      code: 'na',
+      name: 'EUROPE',
+      code: 'europe',
     },
   ];
 
@@ -93,6 +45,13 @@ export class SearchComponent implements OnInit, OnDestroy {
    * Search summoner field.
    */
   summonerSearch = new FormControl<string>('', {
+    validators: Validators.required,
+  });
+
+  /**
+   * Search summoner tag line field.
+   */
+  summonerTagLine = new FormControl<string>('', {
     validators: Validators.required,
   });
 
@@ -120,6 +79,14 @@ export class SearchComponent implements OnInit, OnDestroy {
    */
   summonerInfo?: Summoner
 
+  /**
+   * Duration of the request
+   */
+  durationTime?: number;
+
+  /**
+   * Multiple region research suggestion.
+   */
   suggestions?: Suggestion;
 
   constructor() { }
@@ -128,16 +95,18 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.summonerRegion.patchValue(this.selectedRegion);
 
     // Subscribe on field changes
-    this.subscription = this.summonerSearch.valueChanges
-   .pipe(
-      debounceTime(500),
-      distinctUntilChanged()
-    )
-   .subscribe((summonerInput) => {
-      if (summonerInput!== null && summonerInput!== "") {
-        this.getSummonerInfoInAllRegions(summonerInput);
-      }
-    });
+    // this.subscription = this.summonerSearch.valueChanges
+    // .pipe(
+    //   debounceTime(500),
+    //   distinctUntilChanged()
+    // )
+    // .subscribe((summonerInput) => {
+    //   if ((summonerInput!== null && summonerInput!== "") && 
+    //     this.summonerTagLine.value!== null && this.summonerTagLine.value!== "") 
+    //   {
+    //     this.getSummonerInfoInAllRegions(summonerInput);
+    //   }
+    // });
   }
 
   getRegionSelected(e: any): void {
@@ -145,23 +114,25 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   searchSummonerByName(): void {
-    if (this.selectedRegion === 'default' || !this.summonerSearch.valid) {
+    if (this.selectedRegion === 'default' || !this.summonerSearch.valid || !this.summonerTagLine.valid) {
       this.isSearchValid = false;
       return;
     } else {
       this.isSearchValid = true;
     }
 
-    if (this.summonerInfo) {
-      this.suggestions = undefined;
-      return;
-    }
+    // if (this.summonerInfo) {
+    //   this.suggestions = undefined;
+    //   return;
+    // }
 
     this.searchService
-      .getSummonerData(this.selectedRegion, this.summonerSearch.value!)
+      .getSummonerData(this.selectedRegion, this.summonerSearch.value!, this.summonerTagLine.value!)
       .then((summoner) => {
-        this.summonerInfo = summoner;
-        this.suggestions = undefined;
+        this.summonerInfo = summoner.summoner;
+        this.durationTime = summoner.duration;
+
+        // this.suggestions = undefined;
       })
       .catch((error) => {
         console.error(error);
@@ -180,7 +151,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       });
   }
 
-  displaySelectedSUggestion(suggestedSummoner: Summoner): void {
+  displaySelectedSuggestion(suggestedSummoner: Summoner): void {
     this.summonerInfo = suggestedSummoner;
 
     const index = this.regionOptions.findIndex((r) => r.code === this.summonerInfo?.region);
