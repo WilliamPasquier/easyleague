@@ -9,6 +9,7 @@ export interface Summoner {
     profileIconId: number;
     summonerLevel: number;
     lastDateConnection: Date;
+    accountRegion: string;
     region: string;
     ranks: Array<Rank>;
     matches: Array<string>;

@@ -340,6 +340,7 @@ def get_account(account_region, gamename, tagline):
         summoner_data['profileIconId'],
         summoner_data['summonerLevel'],
         revision_date,
+        account_region,
         correct_region,
         ranks, 
         matches

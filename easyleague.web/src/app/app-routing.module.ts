@@ -16,7 +16,7 @@ const routes: Routes = [
     component: SearchComponent,
   },
   {
-    path: `${RoutePath.Summoner}/:region/:summoner/:tagLine`,
+    path: `${RoutePath.Summoner}/:accountRegion/:summoner/:tagLine`,
     component: SummonerComponent,
   },
   {
