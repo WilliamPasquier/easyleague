@@ -40,8 +40,7 @@
     }
 
     &--loader {
-        display: flex;
-        color: $space-cadet;          
+        display: flex;        
       }
 }
 
@@ -52,7 +51,7 @@
         flex-direction: column;
         gap: 1rem;
         border-radius: 1.5rem;
-        background-color: $space-cadet;
+        background-color: $white;
     }
 
     &--bar {
