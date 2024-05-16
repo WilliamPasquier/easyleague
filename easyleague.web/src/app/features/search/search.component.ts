@@ -4,7 +4,7 @@ import { Region } from '@shared/models/region.model';
 import { Summoner } from '@shared/models/summoner.model';
 import { Subscription, debounceTime, distinctUntilChanged } from 'rxjs';
 import { SearchService } from './services/search.service';
-import { faCircleExclamation, faMagnifyingGlass, faStopwatch } from '@fortawesome/free-solid-svg-icons';
+import { faCircleExclamation, faMagnifyingGlass, faStopwatch, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { Suggestion } from './models/suggestion.model';
 
 @Component({
@@ -16,6 +16,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   faMagnifyingGlass = faMagnifyingGlass;
   faCircleExclamation = faCircleExclamation;
   faStopwatch = faStopwatch;
+  faSpinner = faSpinner;
 
   searchService = inject(SearchService);
 
@@ -75,6 +76,11 @@ export class SearchComponent implements OnInit, OnDestroy {
   isSearchValid: boolean = true;
 
   /**
+   * Check if the loader should be visible
+   */
+  isLoading: boolean = false;
+
+  /**
    * Summoner info retrieve from
    */
   summonerInfo?: Summoner
@@ -126,16 +132,19 @@ export class SearchComponent implements OnInit, OnDestroy {
     //   return;
     // }
 
+    this.isLoading = true;
+
     this.searchService
       .getSummonerData(this.selectedRegion, this.summonerSearch.value!, this.summonerTagLine.value!)
       .then((summoner) => {
         this.summonerInfo = summoner.summoner;
         this.durationTime = summoner.duration;
-
+        this.isLoading = false;
         // this.suggestions = undefined;
       })
       .catch((error) => {
         console.error(error);
+        this.isLoading = false;
       });
   }
 

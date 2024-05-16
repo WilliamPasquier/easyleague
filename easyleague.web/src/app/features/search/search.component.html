@@ -58,7 +58,9 @@
       </div>
     </div> -->
   </div>
-
+  <div class="search--loader" *ngIf="isLoading">
+    <fa-icon [icon]="faSpinner" [spin]="true" class="fa-2x"></fa-icon>
+  </div>
   <div 
     class="search--error-dialog" 
     *ngIf="!isSearchValid"
