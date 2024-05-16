@@ -3,7 +3,8 @@ import { DestroyRef, Injectable, inject } from '@angular/core';
 import { environment } from 'src/environments/environment.development';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Search } from 'src/app/features/search/models/summoner-search.model';
-import { Suggestion } from '../models/suggestion.model';
+import { Suggestion } from 'src/app/features/search/models/suggestion.model';
+
 
 @Injectable({
   providedIn: 'root'
