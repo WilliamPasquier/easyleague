@@ -30,6 +30,14 @@
     &--result {
         width: 100%;
     }
+
+    &--duration-time {
+        width: 100%;
+        display: flex;
+        justify-content: flex-start;
+        font-style: italic;
+        gap: 0.1rem;
+    }
 }
 
 .search-bar {
@@ -124,13 +132,5 @@
         flex-direction: column;
         gap: 1rem;
         overflow-y: auto;
-    }
-
-    &--duration {
-        font-style: italic;
-    }
-
-    &--duration, &--duration-icon {
-        color:  $space-cadet;
     }
 }

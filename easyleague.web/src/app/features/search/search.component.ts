@@ -79,6 +79,14 @@ export class SearchComponent implements OnInit, OnDestroy {
    */
   summonerInfo?: Summoner
 
+  /**
+   * Duration of the request
+   */
+  durationTime?: number;
+
+  /**
+   * Multiple region research suggestion.
+   */
   suggestions?: Suggestion;
 
   constructor() { }
@@ -87,16 +95,18 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.summonerRegion.patchValue(this.selectedRegion);
 
     // Subscribe on field changes
-    this.subscription = this.summonerSearch.valueChanges
-    .pipe(
-      debounceTime(500),
-      distinctUntilChanged()
-    )
-    .subscribe((summonerInput) => {
-      if (summonerInput!== null && summonerInput!== "") {
-        this.getSummonerInfoInAllRegions(summonerInput);
-      }
-    });
+    // this.subscription = this.summonerSearch.valueChanges
+    // .pipe(
+    //   debounceTime(500),
+    //   distinctUntilChanged()
+    // )
+    // .subscribe((summonerInput) => {
+    //   if ((summonerInput!== null && summonerInput!== "") && 
+    //     this.summonerTagLine.value!== null && this.summonerTagLine.value!== "") 
+    //   {
+    //     this.getSummonerInfoInAllRegions(summonerInput);
+    //   }
+    // });
   }
 
   getRegionSelected(e: any): void {
@@ -104,23 +114,25 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   searchSummonerByName(): void {
-    if (this.selectedRegion === 'default' || !this.summonerSearch.valid) {
+    if (this.selectedRegion === 'default' || !this.summonerSearch.valid || !this.summonerTagLine.valid) {
       this.isSearchValid = false;
       return;
     } else {
       this.isSearchValid = true;
     }
 
-    if (this.summonerInfo) {
-      this.suggestions = undefined;
-      return;
-    }
+    // if (this.summonerInfo) {
+    //   this.suggestions = undefined;
+    //   return;
+    // }
 
     this.searchService
-      .getSummonerData(this.selectedRegion, this.summonerSearch.value!)
+      .getSummonerData(this.selectedRegion, this.summonerSearch.value!, this.summonerTagLine.value!)
       .then((summoner) => {
-        this.summonerInfo = summoner;
-        this.suggestions = undefined;
+        this.summonerInfo = summoner.summoner;
+        this.durationTime = summoner.duration;
+
+        // this.suggestions = undefined;
       })
       .catch((error) => {
         console.error(error);
@@ -139,7 +151,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       });
   }
 
-  displaySelectedSUggestion(suggestedSummoner: Summoner): void {
+  displaySelectedSuggestion(suggestedSummoner: Summoner): void {
     this.summonerInfo = suggestedSummoner;
 
     const index = this.regionOptions.findIndex((r) => r.code === this.summonerInfo?.region);

@@ -295,12 +295,13 @@ def get_account(account_region, gamename, tagline):
 
     # EXEMPLE FOR DOCUMENTATION ! 
     # for region in regions:
-    #     summoner_request = get_summoner_by_puuid(region, puuid)
+    #     summoner_result = get_summoner_by_puuid(region, puuid)
 
-    #     if summoner_request.status_code == 200:
-    #         summoner_data = summoner_request.json()
+    #     if summoner_result != None:
+    #         summoner_data = summoner_result
     #         summoner_id = summoner_data['id']
-    #         correct_region = region
+    #         correct_region = summoner_data['region']
+    #         revision_date = datetime.fromtimestamp(summoner_data['revisionDate'])
 
     # MULTITHREADED VERSION 
     with ThreadPoolExecutor(max_workers=16) as pool:

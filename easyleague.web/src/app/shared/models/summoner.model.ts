@@ -5,9 +5,11 @@ import { Rank } from "./rank.model";
  */
 export interface Summoner {
     name: string;
+    tagLine: string;
     profileIconId: number;
     summonerLevel: number;
-    lastDateConnection: number;
+    lastDateConnection: Date;
     region: string;
-    ranks: Array<Rank>
+    ranks: Array<Rank>;
+    matches: Array<string>;
 }
