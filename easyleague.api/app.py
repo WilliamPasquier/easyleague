@@ -56,7 +56,7 @@ def get_region_matches(region):
         return 'asia'
 
 def create_header():
-    '''Construit le header de l'app en fournissant le token d'authentification'''
+    '''Construit le header de la requête http en fournissant le token RIOT d'authentification'''
     global riot_token
 
     return {
@@ -204,21 +204,6 @@ def get_summoner_data_all_region(username):
     result['duration'] = round(finished - started, 2)
 
     return json.dumps(result)
-    
-
-# @app.route('/<region>/summoner/<username>/matches', methods=['GET', 'POST'])
-# def get_matches(region, username):
-#     '''Récupère les ids des 20 dernières parties du joueur via le pseudo'''
-#     region_matches = get_region_matches(region)
-#     puuid = get_summoner_data(region, username)['puuid']
-
-#     headers = create_header()
-
-#     url = f'https://{region_matches}.api.riotgames.com/lol/match/v5/matches/by-puuid/{puuid}/ids?start=0&count=20'
-
-#     matches = requests.get(url, headers=headers).json()
-
-#     return matches
 
 @app.route('/<region>/summoner/<username>/match/<id>', methods=['GET', 'POST'])
 def get_match_info(region, username, id):
@@ -327,7 +312,7 @@ def get_account(account_region, gamename, tagline):
                 summoner_data = summoner_result
                 summoner_id = summoner_data['id']
                 correct_region = summoner_data['region']
-
+                revision_date = datetime.fromtimestamp(summoner_data['revisionDate'])
             
     ranks_data = get_summoner_ranks(correct_region, summoner_id)
     for rank in ranks_data:
@@ -364,7 +349,7 @@ def get_account(account_region, gamename, tagline):
 
     result['duration'] = round(finished - started, 2)
 
-    return json.dumps(result)
+    return json.dumps(result, indent=4, cls=DateTimeEncoder.DateTimeEncoder)
 
 
 
@@ -406,6 +391,5 @@ if __name__ == '__main__':
         sys.exit(1)
 
     app.run(host='0.0.0.0', port=7000)
-    # get_account('europe', 'BetterCallHomie', 'SEXY')
 
     
