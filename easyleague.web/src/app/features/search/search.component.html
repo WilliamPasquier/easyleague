@@ -10,6 +10,12 @@
         placeholder="Enter summoner name"
         [formControl]="summonerSearch"
       />
+      <input 
+        id="summoner-search-tagline" 
+        type="text" class="search-bar--tagline" 
+        placeholder="Enter tag line"
+        [formControl]="summonerTagLine"
+      />
       <select 
         id="summoner-region" 
         class="search-bar--region"
@@ -32,7 +38,7 @@
         <fa-icon [icon]="faMagnifyingGlass"></fa-icon>
       </button>
     </div>
-    <div 
+    <!-- <div 
       class="search-bar--suggestion"
       *ngIf="suggestions && summonerSearch.value"
     >
@@ -47,17 +53,33 @@
         <app-summoner-suggestion
           *ngFor="let suggestion of suggestions.regions"
           [summonerSuggestion]="suggestion"
-          (selectedSuggestion)="displaySelectedSUggestion($event)"
+          (selectedSuggestion)="displaySelectedSuggestion($event)"
         ></app-summoner-suggestion>
       </div>
-    </div>
+    </div> -->
   </div>
-
-  <div class="search--error-dialog" *ngIf="!isSearchValid">
+  <div class="search--loader" *ngIf="isLoading">
+    <fa-icon [icon]="faSpinner" [spin]="true" class="fa-2x"></fa-icon>
+  </div>
+  <div 
+    class="search--error-dialog" 
+    *ngIf="!isSearchValid"
+  >
     <fa-icon [icon]="faCircleExclamation"></fa-icon>
     <span class="search-bar--error-message">
-      Please check if a summoner is entered and a region is selected
+      Please check if a summoner and a tag line is entered and if a region is selected
     </span>
+  </div>
+
+  <div 
+    class="search--duration-time"
+    *ngIf="durationTime"
+  >
+    <fa-icon
+      class="search-bar--duration-icon"
+      [icon]="faStopwatch"
+    ></fa-icon>
+    Found in {{ durationTime }} second(s)
   </div>
 
   <div class="search--result">
@@ -68,7 +90,7 @@
     <ng-template 
       class="search--no-result" 
       #noSummoner>
-      <span>0 Results</span>
+      <span>0 Result(s)</span>
     </ng-template>
   </div>
 </div>

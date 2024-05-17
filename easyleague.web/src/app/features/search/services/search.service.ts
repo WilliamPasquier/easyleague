@@ -1,17 +1,21 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Summoner } from '@shared/models/summoner.model';
+import { DestroyRef, Injectable, inject } from '@angular/core';
 import { environment } from 'src/environments/environment.development';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Search } from 'src/app/features/search/models/summoner-search.model';
 import { Suggestion } from '../models/suggestion.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SearchService {
-  constructor(private http: HttpClient) { }
+  private destroyRef = inject(DestroyRef);
+  private http = inject(HttpClient)
 
-  getSummonerData(region: string, summoner: string): Promise<Summoner> {
-    const url: string = `${environment.apiURL}/${region}/summoner/${summoner}`;
+  constructor() { }
+
+  getSummonerData(region: string, summoner: string, tagLine: string): Promise<Search> {
+    const url: string = `${environment.apiURL}/v2/${region}/account/${summoner}/${tagLine}`;
     
     return new Promise((resolve, reject) => {
       this.http.get<any>(url)
@@ -25,6 +29,7 @@ export class SearchService {
 
       //   return throwError(error);
       // }))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((response) => {
         resolve(response);
       })
@@ -36,6 +41,7 @@ export class SearchService {
 
     return new Promise((resolve, reject) => {
       this.http.get<any>(url)
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((response) => {
         resolve(response);
       })
