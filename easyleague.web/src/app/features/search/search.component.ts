@@ -83,7 +83,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   /**
    * Summoner info retrieve from
    */
-  summonerInfo?: Summoner
+  summonerInfo: Summoner | null = null;
 
   /**
    * Duration of the request
@@ -135,10 +135,10 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.isLoading = true;
 
     this.searchService
-      .getSummonerData(this.selectedRegion, this.summonerSearch.value!, this.summonerTagLine.value!)
-      .then((summoner) => {
-        this.summonerInfo = summoner.summoner;
-        this.durationTime = summoner.duration;
+      .requestSummonerData(this.selectedRegion, this.summonerSearch.value!, this.summonerTagLine.value!)
+      .then(() => {
+        this.summonerInfo = this.searchService.getSummoner();
+        this.durationTime = this.searchService.getDurationTime();
         this.isLoading = false;
         // this.suggestions = undefined;
       })
