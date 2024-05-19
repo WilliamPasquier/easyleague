@@ -28,7 +28,6 @@ export class SearchService {
    */
   error?: string;
 
-
   constructor() { }
 
   getSummoner(): Summoner | null {
