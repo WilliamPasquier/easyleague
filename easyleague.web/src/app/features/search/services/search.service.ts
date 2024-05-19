@@ -23,6 +23,12 @@ export class SearchService {
    */
   durationTime: number = 0;
 
+  /**
+   * Error raised during the request.
+   */
+  error?: string;
+
+
   constructor() { }
 
   getSummoner(): Summoner | null {
@@ -38,22 +44,15 @@ export class SearchService {
     
     return new Promise((resolve, reject) => {
       this.http.get<Search>(url)
-      // .pipe(catchError((error) => {
-      //   if([401, 404].includes(error.status)) {
-      //     resolve('');
-      //   }
-      //   else {
-      //     reject(error);
-      //   }
-
-      //   return throwError(error);
-      // }))
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((response) => {
-        this.summonerInformation = response.summoner;
-        this.durationTime = response.duration;
-        resolve()
-      })
+       .pipe(takeUntilDestroyed(this.destroyRef))
+       .subscribe((response) => {
+          this.summonerInformation = response.summoner;
+          this.durationTime = response.duration;
+          resolve()
+        }, (error) => {
+          this.error = error.error.error;
+          reject(error);
+        })
     }) 
   }
 

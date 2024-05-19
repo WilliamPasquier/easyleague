@@ -63,11 +63,14 @@
   </div>
   <div 
     class="search--error-dialog" 
-    *ngIf="!isSearchValid"
+    *ngIf="!isSearchValid || errorMessage "
   >
     <fa-icon [icon]="faCircleExclamation"></fa-icon>
-    <span class="search-bar--error-message">
+    <span class="search-bar--error-message" *ngIf="!isSearchValid">
       Please check if a summoner and a tag line is entered and if a region is selected
+    </span>
+    <span class="search-bar--error-message" *ngIf="errorMessage">
+      {{ errorMessage }}
     </span>
   </div>
 

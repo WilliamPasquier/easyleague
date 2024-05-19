@@ -1,6 +1,6 @@
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
-from flask import Flask
+from flask import Flask, jsonify
 from flask_cors import CORS
 from easyleaguemodel import Summoner, DateTimeEncoder
 import json
@@ -246,9 +246,9 @@ def get_summoner_by_puuid(region, puuid):
     url = f'https://{region_summoner}.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/{puuid}'
     headers = create_header()
 
-    summoner_request = requests.get(url, headers=headers)
-
-    if summoner_request.status_code == 200:
+    try:
+        summoner_request = requests.get(url, headers=headers)
+        summoner_request.raise_for_status()
         summoner_data = summoner_request.json()
 
         summoner = {
@@ -258,8 +258,8 @@ def get_summoner_by_puuid(region, puuid):
             'summonerLevel': summoner_data['summonerLevel'],
             'region': region
         }
-    else:
-        summoner = None
+    except requests.exceptions.RequestException as e:
+        return jsonify({'error': 'Error when requesting Riot API'}), 500
 
     return summoner
 
@@ -267,9 +267,14 @@ def get_account_puuid(region, gamename, tagline):
     url = f'https://{region}.api.riotgames.com/riot/account/v1/accounts/by-riot-id/{gamename}/{tagline}'
     headers = create_header()
 
-    account = requests.get(url, headers=headers).json()
+    try:
+        account_request = requests.get(url, headers=headers)
+        account_request.raise_for_status()
+        account = account_request.json()
 
-    return account
+        return account
+    except requests.exceptions.RequestException as e:
+        return jsonify({'error': 'Error when requesting Riot API'}), 500
 
 @app.route('/v2/<account_region>/account/<gamename>/<tagline>', methods=['GET', 'POST'])
 def get_account(account_region, gamename, tagline):
@@ -290,61 +295,68 @@ def get_account(account_region, gamename, tagline):
 
     started = time.perf_counter()
 
-    account = get_account_puuid(account_region, gamename, tagline)
-    puuid = account['puuid']
+    try:
+        account = get_account_puuid(account_region, gamename, tagline)
+        puuid = account['puuid']
 
-    # EXEMPLE FOR DOCUMENTATION ! 
-    # for region in regions:
-    #     summoner_result = get_summoner_by_puuid(region, puuid)
+        # EXEMPLE FOR DOCUMENTATION ! 
+        # for region in regions:
+        #     summoner_result = get_summoner_by_puuid(region, puuid)
 
-    #     if summoner_result != None:
-    #         summoner_data = summoner_result
-    #         summoner_id = summoner_data['id']
-    #         correct_region = summoner_data['region']
-    #         revision_date = datetime.fromtimestamp(summoner_data['revisionDate'])
+        #     if summoner_result != None:
+        #         summoner_data = summoner_result
+        #         summoner_id = summoner_data['id']
+        #         correct_region = summoner_data['region']
+        #         revision_date = datetime.fromtimestamp(summoner_data['revisionDate'])
 
-    # MULTITHREADED VERSION 
-    with ThreadPoolExecutor(max_workers=16) as pool:
-        requests = {pool.submit(get_summoner_by_puuid, region, puuid): region for region in regions}
-        for request in as_completed(requests):
-            summoner_result = request.result()
+        # MULTITHREADED VERSION 
+        with ThreadPoolExecutor(max_workers=16) as pool:
+            requests = {pool.submit(get_summoner_by_puuid, region, puuid): region for region in regions}
+            for request in as_completed(requests):
+                summoner_result = request.result()
 
-            if summoner_result != None:
-                summoner_data = summoner_result
-                summoner_id = summoner_data['id']
-                correct_region = summoner_data['region']
-                revision_date = datetime.fromtimestamp(summoner_data['revisionDate'])
-            
-    ranks_data = get_summoner_ranks(correct_region, summoner_id)
-    for rank in ranks_data:
-        queue_type = get_queue_name(rank['queueType'])
+                if summoner_result is not None:
+                    summoner_data = summoner_result
+                    summoner_id = summoner_data['id']
+                    correct_region = summoner_data['region']
+                    revision_date = datetime.fromtimestamp(summoner_data['revisionDate'])
+                    break
 
-        r = Summoner.Rank(
-            rank['queueType'],
-            queue_type,
-            rank['tier'],
-            rank['rank'],
-            rank['leaguePoints'],
-            rank['wins'],
-            rank['losses']
+        if summoner_data is None:
+            raise Exception("Summoner non trouvé")
+
+        ranks_data = get_summoner_ranks(correct_region, summoner_id)
+        for rank in ranks_data:
+            queue_type = get_queue_name(rank['queueType'])
+
+            r = Summoner.Rank(
+                rank['queueType'],
+                queue_type,
+                rank['tier'],
+                rank['rank'],
+                rank['leaguePoints'],
+                rank['wins'],
+                rank['losses']
+            )
+
+            ranks.append(r.__dict__)
+
+        matches = get_matches(correct_region, puuid)
+
+        summoner = Summoner.Summoner(
+            account['gameName'],
+            account['tagLine'],
+            summoner_data['profileIconId'],
+            summoner_data['summonerLevel'],
+            revision_date,
+            correct_region,
+            ranks, 
+            matches
         )
 
-        ranks.append(r.__dict__)
-
-    matches = get_matches(correct_region, puuid)
-
-    summoner = Summoner.Summoner(
-        account['gameName'],
-        account['tagLine'],
-        summoner_data['profileIconId'],
-        summoner_data['summonerLevel'],
-        revision_date,
-        correct_region,
-        ranks, 
-        matches
-    )
-
-    result['summoner'] = summoner.__dict__
+        result['summoner'] = summoner.__dict__
+    except Exception as e:
+        return jsonify({'error': 'The user you are looking for does not exist'}), 404
 
     finished = time.perf_counter()
 
