@@ -241,27 +241,28 @@ def get_match_timeline(region, username, id):
 ########################################################
 
 def get_summoner_by_puuid(region, puuid):
-    '''Récupère les informations d'un summoner via le puuid'''
-    region_summoner = get_region_summoner(region)
-    url = f'https://{region_summoner}.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/{puuid}'
-    headers = create_header()
+    with app.app_context():
+        '''Récupère les informations d'un summoner via le puuid'''
+        region_summoner = get_region_summoner(region)
+        url = f'https://{region_summoner}.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/{puuid}'
+        headers = create_header()
 
-    try:
-        summoner_request = requests.get(url, headers=headers)
-        summoner_request.raise_for_status()
-        summoner_data = summoner_request.json()
+        try:
+            summoner_request = requests.get(url, headers=headers)
+            summoner_request.raise_for_status()
+            summoner_data = summoner_request.json()
 
-        summoner = {
-            'id': summoner_data['id'],
-            'profileIconId': summoner_data['profileIconId'],
-            'revisionDate': round(summoner_data['revisionDate'] / 1000),
-            'summonerLevel': summoner_data['summonerLevel'],
-            'region': region
-        }
-    except requests.exceptions.RequestException as e:
-        return jsonify({'error': 'Error when requesting Riot API'}), 500
+            summoner = {
+                'id': summoner_data['id'],
+                'profileIconId': summoner_data['profileIconId'],
+                'revisionDate': round(summoner_data['revisionDate'] / 1000),
+                'summonerLevel': summoner_data['summonerLevel'],
+                'region': region
+            }
+        except requests.exceptions.RequestException as e:
+            return jsonify({'error': 'Error when requesting Riot API'}), 500
 
-    return summoner
+        return summoner
 
 def get_account_puuid(region, gamename, tagline):
     url = f'https://{region}.api.riotgames.com/riot/account/v1/accounts/by-riot-id/{gamename}/{tagline}'
@@ -315,7 +316,7 @@ def get_account(account_region, gamename, tagline):
             for request in as_completed(requests):
                 summoner_result = request.result()
 
-                if summoner_result is not None:
+                if summoner_result is not None and isinstance(summoner_result, dict):
                     summoner_data = summoner_result
                     summoner_id = summoner_data['id']
                     correct_region = summoner_data['region']
