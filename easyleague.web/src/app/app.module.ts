@@ -12,6 +12,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { SummonerSuggestionComponent } from './features/search/components/summoner-suggestion/summoner-suggestion.component';
+import { NavbarComponent } from './shared/components/navbar/navbar.component';
 
 
 @NgModule({
@@ -21,7 +22,8 @@ import { SummonerSuggestionComponent } from './features/search/components/summon
     UserComponent,
     ReplayComponent,
     SummonerCardComponent,
-    SummonerSuggestionComponent
+    SummonerSuggestionComponent,
+    NavbarComponent
   ],
   imports: [
     BrowserModule,

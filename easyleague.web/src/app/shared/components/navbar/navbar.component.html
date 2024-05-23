@@ -1,0 +1,12 @@
+<nav class="nav--container">
+    <ng-container
+        *ngIf="true; else notSearching"
+    >
+        <p class="nav--title">EasyLeague</p>
+    </ng-container>
+    <ng-template
+        #notSearching
+    >
+        <a href="">Back to search</a>
+    </ng-template>
+</nav>

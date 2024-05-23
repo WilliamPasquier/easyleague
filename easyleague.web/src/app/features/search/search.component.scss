@@ -1,5 +1,12 @@
 @import '../../../styles/variables.scss';
 
+.container {
+    height: 90%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .search {
     &--container {
         display: flex;

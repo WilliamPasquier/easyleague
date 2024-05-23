@@ -1,0 +1,8 @@
+@import '../../../../styles/variables.scss';
+
+nav {
+    &--container {
+        height: 120px;
+        background-color: $white;
+    }
+}
