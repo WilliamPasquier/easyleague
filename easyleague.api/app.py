@@ -358,7 +358,7 @@ def get_account(account_region, gamename, tagline):
 # "Fonction" Principale
 ############################
 if __name__ == '__main__':
-    # Achille c'est chié dessus dans la salle 702 de l'EPSIC le caca lui a coulé sur la chaussure
+    # Achille s'est chié dessus dans la salle 702 de l'EPSIC le caca lui a coulé sur la chaussure
     if len(sys.argv) != 2:
         print("Erreur: Nombres d'arguments incorrect\nUtilisation: python app.py <token api Riot>")
         sys.exit(1)
