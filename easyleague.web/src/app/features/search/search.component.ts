@@ -95,6 +95,11 @@ export class SearchComponent implements OnInit, OnDestroy {
    */
   suggestions?: Suggestion;
 
+  /**
+   * Message received by the request.
+   */
+  errorMessage?: string;
+
   constructor() { }
 
   ngOnInit(): void {
@@ -132,6 +137,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     //   return;
     // }
 
+    this.errorMessage = undefined;
     this.isLoading = true;
 
     this.searchService
@@ -145,6 +151,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       .catch((error) => {
         console.error(error);
         this.isLoading = false;
+        this.errorMessage = this.searchService.error;
       });
   }
 
