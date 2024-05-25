@@ -37,5 +37,11 @@ After that you can start the application with the command
 python app.py <Riot token>
 ```
 
+For example
+
+```console
+python app.py RGAPI-72cd903d-abf3-4891-8035-cdde71b6b7d9
+```
+
 You can obtain one from the [Riot Developer Portal](https://developer.riotgames.com/).
 Keys are available for 24 hours. Make sure it's a working key.
