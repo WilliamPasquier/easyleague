@@ -1,11 +1,11 @@
 # EasyLeague - League of Legends realtime stats tracker
 
-L'application EasyLeague permet de récupérer les informations d'un compte League Of Legends et d'afficher les informations du compte.
+The EasyLeague application allows you to retrieve information from a League Of Legends account and display account information.
 
-Elle fonctionne grâce à l'API de [Riot Games](https://developer.riotgames.com/) qui nous permet de récupérer les données nécessaire.
+It uses the Riot Games API to retrieve the necessary data.
 
-L'application est construite avec un back-end en Python basé sur le microframework Flask et une front-end basé sur Angular.
+The application is built with a Python back-end based on the Flask microframework and an Angular-based front-end.
 
-Afin de savoir comment démarrer l'application Angular veuillez vous référer au [README](https://github.com/WilliamPasquier/easyleague/blob/master/easyleague.web/README.md) du projet
+To find out how to get started with the Angular application, please refer to the project [README](https://github.com/WilliamPasquier/easyleague/blob/master/easyleague.web/README.md).
 
-Afin de savoir comment démarrer l'application Python veuillez vous référer au [README](https://github.com/WilliamPasquier/easyleague/blob/master/easyleague.api/README.md) du projet
+To find out how to get started with the Python application, please refer to the project [README](https://github.com/WilliamPasquier/easyleague/blob/master/easyleague.api/README.md).
