@@ -2,6 +2,20 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.0.5.
 
+## Install NPM packages
+
+First make sure you have Node, NPM and Angular CLI installed on your computer.
+Then install all the packages by doing
+
+```console
+npm install
+```
+or
+```console
+npm i
+```
+in the root of the project `easyleague.web`
+
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
