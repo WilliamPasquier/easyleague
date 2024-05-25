@@ -1,0 +1,96 @@
+<div class="search--container">
+  <h1 class="search--title">EasyLeague</h1>
+  <p class="search--subtitle">Track your personal data in <strong>realtime</strong> !</p>
+  
+  <div class="search-bar--container">
+    <div class="search-bar--bar">
+      <input 
+        id="summoner-search" 
+        type="text" class="search-bar--field" 
+        placeholder="Enter summoner name"
+        [formControl]="summonerSearch"
+      />
+      <input 
+        id="summoner-search-tagline" 
+        type="text" class="search-bar--tagline" 
+        placeholder="Enter tag line"
+        [formControl]="summonerTagLine"
+      />
+      <select 
+        id="summoner-region" 
+        class="search-bar--region"
+        [formControl]="summonerRegion"
+        (change)="getRegionSelected($event)"
+      >
+        <option 
+          value="default" 
+          class="search-bar--region-option" 
+          selected
+        >Choose a region</option>
+        <option 
+          *ngFor="let regionOption of regionOptions" 
+          [value]="regionOption.code"
+          [attr.id]="'region-' + regionOption.code" 
+          class="search-bar--region-option"
+        >{{ regionOption.name }}</option>
+      </select>
+      <button class="search-bar--search-btn" (click)="searchSummonerByName()">
+        <fa-icon [icon]="faMagnifyingGlass"></fa-icon>
+      </button>
+    </div>
+    <!-- <div 
+      class="search-bar--suggestion"
+      *ngIf="suggestions && summonerSearch.value"
+    >
+      <span class="search-bar--duration">
+        <fa-icon
+          class="search-bar--duration-icon"
+          [icon]="faStopwatch"
+        ></fa-icon>
+        Found in {{ suggestions.duration }} second(s)
+      </span>
+      <div class="search-bar--suggestion-container">
+        <app-summoner-suggestion
+          *ngFor="let suggestion of suggestions.regions"
+          [summonerSuggestion]="suggestion"
+          (selectedSuggestion)="displaySelectedSuggestion($event)"
+        ></app-summoner-suggestion>
+      </div>
+    </div> -->
+  </div>
+  <div class="search--loader" *ngIf="isLoading">
+    <fa-icon [icon]="faSpinner" [spin]="true" class="fa-2x"></fa-icon>
+  </div>
+  <div 
+    class="search--error-dialog" 
+    *ngIf="!isSearchValid"
+  >
+    <fa-icon [icon]="faCircleExclamation"></fa-icon>
+    <span class="search-bar--error-message">
+      Please check if a summoner and a tag line is entered and if a region is selected
+    </span>
+  </div>
+
+  <div 
+    class="search--duration-time"
+    *ngIf="durationTime"
+  >
+    <fa-icon
+      class="search-bar--duration-icon"
+      [icon]="faStopwatch"
+    ></fa-icon>
+    Found in {{ durationTime }} second(s)
+  </div>
+
+  <div class="search--result">
+    <app-summoner-card 
+      *ngIf="summonerInfo; else noSummoner"
+      [summonerInfo]="summonerInfo"
+    ></app-summoner-card>
+    <ng-template 
+      class="search--no-result" 
+      #noSummoner>
+      <span>0 Result(s)</span>
+    </ng-template>
+  </div>
+</div>

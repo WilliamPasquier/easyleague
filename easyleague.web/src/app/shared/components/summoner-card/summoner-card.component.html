@@ -1,0 +1,59 @@
+<div 
+    class="summoner--container"
+>
+    <div class="summoner--aside">
+        <img 
+            [attr.src]="'https://raw.communitydragon.org/14.7/game/assets/ux/summonericons/profileicon' + summonerInfo?.profileIconId + '.png'" 
+            alt="Summoner profile icon image" 
+            class="summoner--profile-icon"
+        >
+    </div>
+    <div class="summoner--content">
+        <span class="summoner--name">
+            {{ summonerInfo?.name }}
+            <span class="summoner--level">
+                Level {{ summonerInfo?.summonerLevel }}
+            </span>
+        </span>
+        <span class="summoner--region-code">
+            <fa-icon [icon]="faEarthEurope"></fa-icon>
+            {{ regionText?.code }}
+            <span class="summoner--region-name">
+                {{ regionText?.name }}
+            </span>
+        </span>
+        <span class="summoner--lastdate">
+            <fa-icon [icon]="faCalendar"></fa-icon>
+            {{ lastDateConnection }}
+        </span>
+        <span
+            class="summoner--ranks"
+        >
+            <fa-icon [icon]="faMedal"></fa-icon>
+            <div 
+                *ngIf="hasRank; else noRanks"
+                class="summoner--ranks-container"
+            >
+                <div 
+                    class="summoner-rank"
+                    *ngFor="let rank of summonerInfo?.ranks"
+                >
+                    <span class="summoner--rank-queue-name">
+                        {{rank.queueName}}
+                        <span class="summoner--rank-tier">
+                            {{rank.tier}}
+                            <span class="summoner--rank-rank">
+                                {{rank.rank}}
+                            </span>
+                        </span>
+                    </span>
+                </div>
+            </div>
+            <ng-template #noRanks>
+                <span class="summoner--no-ranks">
+                    Unranked
+                </span>
+            </ng-template>
+        </span>
+    </div>
+</div>

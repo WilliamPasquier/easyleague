@@ -1,0 +1,1 @@
+print('Importing EasyLeagueModel librairy')
